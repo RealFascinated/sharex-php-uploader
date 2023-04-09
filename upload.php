@@ -4,6 +4,7 @@ $before = microtime(true); // Start time of the script
 header('Content-type:application/json;charset=utf-8'); // Set the content type to JSON
 error_reporting(E_ERROR); // Hide PHP errors
 $tokens = array("set me"); // Your secret keys
+$uploadDir = "./"; // The upload directory
 
 /**
  * Check if the token is valid
@@ -55,8 +56,8 @@ if (in_array($fileType, array("png", "jpeg", "jpg"))) {
   $target_file = $webp_file;
 }
 
-// Upload the file
-if (move_uploaded_file($_FILES["sharex"]["tmp_name"], $target_file)) {
+// Move the file to the uploads folder
+if (move_uploaded_file($_FILES["sharex"]["tmp_name"], $uploadDir . $target_file)) {
   $timeTaken = microtime(true) - $before;
   returnJson('OK', $target_file, $timeTaken);
 } else {
