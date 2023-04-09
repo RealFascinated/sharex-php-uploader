@@ -118,18 +118,18 @@ try {
         'url' => $finalName,
         'timeTaken' => getTimeTaken()
       ));
-    } else {
-      returnJson(array(
-        'status' => 'ERROR',
-        'url' => 'Failed to save file. Check the permissions of the upload directory.',
-        'timeTaken' => getTimeTaken()
-      ));
+      die();
     }
+    returnJson(array(
+      'status' => 'ERROR',
+      'url' => 'Failed to save file. Check the permissions of the upload directory.',
+      'timeTaken' => getTimeTaken()
+    ));
     die();
   }
   returnJson(array(
     'status' => 'OK',
-    'url' => 'File uploaded successfully',
+    'url' => $finalName,
     'timeTaken' => getTimeTaken()
   ));
   die();
