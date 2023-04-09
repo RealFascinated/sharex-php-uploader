@@ -17,10 +17,10 @@ $webpThreadhold = 1048576; // 1MB - The minimum file size for converting to webp
 /**
  * Check if the given secret is valid
  */
-function checkSecret($token): bool
+function checkSecret($secret): bool
 {
   global $uploadSecrets;
-  return isset($token) && in_array($token, $uploadSecrets);
+  return isset($secret) && in_array($secret, $uploadSecrets);
 }
 
 /**
@@ -56,11 +56,11 @@ function returnJson($data): void
 }
 
 try {
-  $token = $_POST['secret']; // The provided secret key
+  $secret = $_POST['secret']; // The secret key
   $file = $_FILES['sharex']; // The uploaded file
 
   // Check if the token is valid
-  if (!checkSecret($token)) {
+  if (!checkSecret($secret)) {
     returnJson(array(
       'status' => 'ERROR',
       'url' => 'Invalid or missing upload secret',
@@ -94,11 +94,12 @@ try {
     die();
   }
 
-  $shouldSave = true; // Whether or not the file should be saved
   $finalName = $target_file; // The final name of the file
   if ($useRandomFileNames) { // Generate a random file name if enabled
     $finalName = generateRandomString($fileNameLength) . "." . $fileType;
   }
+
+  $saved = false; // Whether or not the file was saved
 
   // Convert the image to webp if applicable
   if (in_array($fileType, array("png", "jpeg", "jpg")) && $_FILES["sharex"]["size"] > $webpThreadhold && $shouldConvertToWebp) {
@@ -107,25 +108,20 @@ try {
     imagewebp($image, $webp_file, $webpQuality); // Convert the image and save it
     imagedestroy($image); // Free up memory
     $finalName = $webp_file;
-    $shouldSave = false;
+    $saved = true;
   }
 
-  if ($shouldSave) {
+  if (!$saved) { // If the file wasn't saved (e.g. webp conversion)
     // Move the file to the uploads folder
-    if (move_uploaded_file($_FILES["sharex"]["tmp_name"], $uploadDir . $finalName)) {
+    $success = move_uploaded_file($_FILES["sharex"]["tmp_name"], $uploadDir . $finalName);
+    if (!$success) {
       returnJson(array(
-        'status' => 'OK',
-        'url' => $finalName,
+        'status' => 'ERROR',
+        'url' => 'Failed to save file. Check the permissions of the upload directory.',
         'timeTaken' => getTimeTaken()
       ));
       die();
     }
-    returnJson(array(
-      'status' => 'ERROR',
-      'url' => 'Failed to save file. Check the permissions of the upload directory.',
-      'timeTaken' => getTimeTaken()
-    ));
-    die();
   }
   returnJson(array(
     'status' => 'OK',
