@@ -17,7 +17,8 @@ $webpThreadhold = 1048576; // 1MB - The minimum file size for converting to webp
 /**
  * Check if the token is valid
  */
-function checkToken($token): bool {
+function checkToken($token): bool
+{
   global $tokens;
   return isset($token) && in_array($token, $tokens);
 }
@@ -25,7 +26,8 @@ function checkToken($token): bool {
 /**
  * Generate a random string
  */
-function generateRandomString($length = 10): string {
+function generateRandomString($length = 10): string
+{
   $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   $charactersLength = strlen($characters);
   $randomString = '';
@@ -38,9 +40,9 @@ function generateRandomString($length = 10): string {
 /**
  * Return a JSON response
  */
-function returnJson($status, $message, $timeTaken = null): void {
-  $json = array('status' => $status, 'url' => $message, 'processingTime' => round($timeTaken ?? 0, 2) . "ms");
-  echo(json_encode($json));
+function returnJson($data): void
+{
+  echo (json_encode($data));
   die();
 }
 
@@ -51,14 +53,23 @@ try {
   // Check if the token is valid
   if (!checkToken($token)) {
     $timeTaken = microtime(true) - $before;
-    returnJson('ERROR', 'Invalid or missing secret key', $timeTaken);
+    returnJson(array(
+      'status' => 'ERROR',
+      'message' => 'Invalid token',
+      'timeTaken' => $timeTaken,
+      'support' => "For support, visit - https://git.fascinated.cc/Fascinated/sharex-php-uploader"
+    ));
     die();
   }
 
   // Check if the file was uploaded
   if (!isset($file)) {
     $timeTaken = microtime(true) - $before;
-    returnJson('ERROR', 'No file was uploaded', $timeTaken);
+    returnJson(array(
+      'status' => 'ERROR',
+      'message' => 'No file was uploaded',
+      'timeTaken' => $timeTaken
+    ));
     die();
   }
 
@@ -68,7 +79,11 @@ try {
   // Check if the file already exists
   if (file_exists($uploadDir . $target_file)) {
     $timeTaken = microtime(true) - $before;
-    returnJson('ERROR', 'File already exists', $timeTaken);
+    returnJson(array(
+      'status' => 'ERROR',
+      'message' => 'File already exists',
+      'timeTaken' => $timeTaken
+    ));
     die();
   }
 
@@ -92,18 +107,33 @@ try {
     // Move the file to the uploads folder
     if (move_uploaded_file($_FILES["sharex"]["tmp_name"], $uploadDir . $finalName)) {
       $timeTaken = microtime(true) - $before;
-      returnJson('OK', $finalName, $timeTaken);
+      returnJson(array(
+        'status' => 'OK',
+        'message' => 'File uploaded successfully',
+        'timeTaken' => $timeTaken
+      ));
     } else {
       $timeTaken = microtime(true) - $before;
-      returnJson('ERROR', 'File upload failed. Does the upload folder exist and did you CHMOD the folder?', $timeTaken);
+      returnJson(array(
+        'status' => 'ERROR',
+        'message' => 'Failed to save file. Check the permissions of the upload directory.',
+        'timeTaken' => $timeTaken
+      ));
     }
     die();
   }
-  returnJson('OK', $finalName, $timeTaken);
+  returnJson(array(
+    'status' => 'OK',
+    'message' => 'File uploaded successfully',
+    'timeTaken' => $timeTaken
+  ));
   die();
 } catch (Exception $e) { // Handle any errors
   $timeTaken = microtime(true) - $before;
-  returnJson('ERROR', $e->getMessage(), $timeTaken);
+  returnJson(array(
+    'status' => 'ERROR',
+    'message' => $e->getMessage(),
+    'timeTaken' => $timeTaken
+  ));
   die();
 }
-?>
