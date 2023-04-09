@@ -38,6 +38,15 @@ function generateRandomString($length = 10): string
 }
 
 /**
+ * Get the time taken to execute the script
+ */
+function getTimeTaken()
+{
+  global $before;
+  return round(microtime(true) - $before, 3) . "ms";
+}
+
+/**
  * Return a JSON response
  */
 function returnJson($data): void
@@ -52,23 +61,22 @@ try {
 
   // Check if the token is valid
   if (!checkToken($token)) {
-    $timeTaken = microtime(true) - $before;
     returnJson(array(
       'status' => 'ERROR',
-      'message' => 'Invalid token',
+      'message' => 'Invalid or missing upload secret',
+      // Remove this if you don't want to show the support URL
       'support' => "For support, visit - https://git.fascinated.cc/Fascinated/sharex-php-uploader",
-      'timeTaken' => $timeTaken
+      'timeTaken' => getTimeTaken()
     ));
     die();
   }
 
   // Check if the file was uploaded
   if (!isset($file)) {
-    $timeTaken = microtime(true) - $before;
     returnJson(array(
       'status' => 'ERROR',
       'message' => 'No file was uploaded',
-      'timeTaken' => $timeTaken
+      'timeTaken' => getTimeTaken()
     ));
     die();
   }
@@ -78,11 +86,10 @@ try {
 
   // Check if the file already exists
   if (file_exists($uploadDir . $target_file)) {
-    $timeTaken = microtime(true) - $before;
     returnJson(array(
       'status' => 'ERROR',
       'message' => 'File already exists',
-      'timeTaken' => $timeTaken
+      'timeTaken' => getTimeTaken()
     ));
     die();
   }
@@ -106,18 +113,16 @@ try {
   if ($shouldSave) {
     // Move the file to the uploads folder
     if (move_uploaded_file($_FILES["sharex"]["tmp_name"], $uploadDir . $finalName)) {
-      $timeTaken = microtime(true) - $before;
       returnJson(array(
         'status' => 'OK',
         'message' => 'File uploaded successfully',
-        'timeTaken' => $timeTaken
+        'timeTaken' => getTimeTaken()
       ));
     } else {
-      $timeTaken = microtime(true) - $before;
       returnJson(array(
         'status' => 'ERROR',
         'message' => 'Failed to save file. Check the permissions of the upload directory.',
-        'timeTaken' => $timeTaken
+        'timeTaken' => getTimeTaken()
       ));
     }
     die();
@@ -125,15 +130,14 @@ try {
   returnJson(array(
     'status' => 'OK',
     'message' => 'File uploaded successfully',
-    'timeTaken' => $timeTaken
+    'timeTaken' => getTimeTaken()
   ));
   die();
 } catch (Exception $e) { // Handle any errors
-  $timeTaken = microtime(true) - $before;
   returnJson(array(
     'status' => 'ERROR',
     'message' => $e->getMessage(),
-    'timeTaken' => $timeTaken
+    'timeTaken' => getTimeTaken()
   ));
   die();
 }
