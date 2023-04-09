@@ -9,6 +9,8 @@ header('Content-type:application/json;charset=utf-8'); // Set the content type t
 $tokens = array("set me"); // Your secret keys
 $uploadDir = "./"; // The upload directory
 $useRandomFileNames = false; // Use random file names instead of the original file name
+$shouldConvertToWebp = true; // Should the script convert images to webp?
+$webpQuality = 90; // The quality of the webp image (0-100)
 $fileNameLength = 8; // The length of the random file name
 $webpThreadhold = 1048576; // 1MB - The minimum file size for converting to webp (in bytes)
 
@@ -77,10 +79,10 @@ try {
   }
 
   // Convert the image to webp if applicable
-  if (in_array($fileType, array("png", "jpeg", "jpg")) && $_FILES["sharex"]["size"] > $webpThreadhold) {
+  if (in_array($fileType, array("png", "jpeg", "jpg")) && $_FILES["sharex"]["size"] > $webpThreadhold && $shouldConvertToWebp) {
     $image = imagecreatefromstring(file_get_contents($_FILES["sharex"]["tmp_name"]));
     $webp_file = pathinfo($finalName, PATHINFO_FILENAME) . ".webp";
-    imagewebp($image, $webp_file, 90); // Convert the image and save it
+    imagewebp($image, $webp_file, $webpQuality); // Convert the image and save it
     imagedestroy($image); // Free up memory
     $finalName = $webp_file;
     $shouldSave = false;
