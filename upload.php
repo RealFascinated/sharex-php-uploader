@@ -10,6 +10,7 @@ $tokens = array("set me"); // Your secret keys
 $uploadDir = "./"; // The upload directory
 $useRandomFileNames = false; // Use random file names instead of the original file name
 $fileNameLength = 8; // The length of the random file name
+$webpThreadhold = 1048576; // The minimum file size for converting to webp (in bytes)
 
 /**
  * Check if the token is valid
@@ -59,7 +60,7 @@ try {
     die();
   }
 
-  $target_file = $_FILES["sharex"]["name"]; // File name
+  $target_file = preg_replace("/[^A-Za-z0-9_.]/", '', $_FILES["sharex"]["name"]); // Remove unwanted characters
   $fileType = pathinfo($target_file, PATHINFO_EXTENSION); // File extension (e.g. png, jpg, etc.)
 
   // Check if the file already exists
@@ -76,7 +77,7 @@ try {
   }
 
   // Convert the image to webp if applicable
-  if (in_array($fileType, array("png", "jpeg", "jpg"))) {
+  if (in_array($fileType, array("png", "jpeg", "jpg")) && $_FILES["sharex"]["size"] > $webpThreadhold) {
     $image = imagecreatefromstring(file_get_contents($_FILES["sharex"]["tmp_name"]));
     $webp_file = pathinfo($finalName, PATHINFO_FILENAME) . ".webp";
     imagewebp($image, $webp_file, 90); // Convert the image and save it

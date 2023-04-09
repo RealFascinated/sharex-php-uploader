@@ -1,32 +1,34 @@
 # ShareX Upload Script
 
-This is a PHP script that lets you easily upload screenshots taken with the ShareX app to your website. ShareX is a popular screenshot tool for Windows that allows you to take screenshots, annotate them, and share them online.
+This PHP script allows you to effortlessly upload your ShareX app screenshots to your website. ShareX is a widely-used Windows screenshot tool that enables users to take screenshots, annotate them, and share them online.
 
 ## Features
 
-- Uploads screenshots to your website using ShareX.
-- Can automatically convert screenshots to WebP format.
+- Effortlessly upload screenshots to your website using ShareX.
+- Automatically convert screenshots to WebP format.
 
 ## Installation
 
-1. Find somewhere to host the script (Preferably more than 5GB of storage).
-2. Check that your web server has the GD library installed. (See below for instructions on how to install it on Ubuntu.)
-3. Upload the files to your server.
-4. Edit the `upload.php` file to configure the script.
-5. Add the custom uploader to ShareX.
-6. Configure the custom uploader in ShareX.
-7. Test it!
+To install this script:
 
-## Help
+- Find a suitable location to host the script (with at least 5GB of storage).
+- Verify that your web server has the GD library installed. (See instructions below for Ubuntu installation.)
+- Upload the files to your server.
+- Edit the `upload.php` file to configure the script.
+- Add the custom uploader to ShareX.
+- Configure the custom uploader in ShareX.
+- Test the script!
 
-If you need help, you can contact me on Discord at `Fascinated#7668`.
+## Need Help?
 
-## How to install GD Library on Ubuntu
+If you require assistance, feel free to contact me via Discord at Fascinated#7668.
 
-1. `sudo apt-get install php-gd`
-2. Add `extension=gd` to your php.ini file.
-3. Restart your web server and php.
+## How to Install GD Library on Ubuntu
 
-## Other
+- `sudo apt-get install php-gd`
+- Add extension=gd to your php.ini file.
+- Restart your web server and php.
 
-This project is worked on at my Gitea instance: <https://git.fascinated.cc/Fascinated/sharex-php-uploader>
+## Other Information
+
+This project is maintained on my Gitea instance: <https://git.fascinated.cc/Fascinated/sharex-php-uploader>
