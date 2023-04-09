@@ -35,7 +35,7 @@ function generateRandomString($length = 10): string {
 /**
  * Return a JSON response
  */
-function returnJson($status, $message, $timeTaken = null) {
+function returnJson($status, $message, $timeTaken = null): void {
   $json = array('status' => $status, 'url' => $message, 'processingTime' => round($timeTaken ?? 0, 2) . "ms");
   echo(json_encode($json));
   die();
@@ -79,8 +79,8 @@ try {
   if (in_array($fileType, array("png", "jpeg", "jpg"))) {
     $image = imagecreatefromstring(file_get_contents($_FILES["sharex"]["tmp_name"]));
     $webp_file = pathinfo($finalName, PATHINFO_FILENAME) . ".webp";
-    imagewebp($image, $webp_file, 90);
-    imagedestroy($image);
+    imagewebp($image, $webp_file, 90); // Convert the image and save it
+    imagedestroy($image); // Free up memory
     $finalName = $webp_file;
     $shouldSave = false;
   }
