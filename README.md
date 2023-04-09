@@ -9,7 +9,7 @@ This is a PHP script that lets you easily upload screenshots taken with the Shar
 
 ## Installation
 
-1. Find somewhere to host the script.
+1. Find somewhere to host the script (Preferably more than 5GB of storage).
 2. Upload the files to your server.
 3. Edit the `upload.php` file to configure the script.
 4. Add the custom uploader to ShareX.
