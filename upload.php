@@ -47,6 +47,13 @@ if (!isset($file)) {
 $target_file = $_FILES["sharex"]["name"]; // File name
 $fileType = pathinfo($target_file, PATHINFO_EXTENSION); // File extension (e.g. png, jpg, etc.)
 
+// Check if the file already exists
+if (file_exists($uploadDir . $target_file)) {
+  $timeTaken = microtime(true) - $before;
+  returnJson('ERROR', 'File already exists', $timeTaken);
+  die();
+}
+
 if (in_array($fileType, array("png", "jpeg", "jpg"))) {
   // Convert to webp
   $image = imagecreatefromstring(file_get_contents($_FILES["sharex"]["tmp_name"]));
