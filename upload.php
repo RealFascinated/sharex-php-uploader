@@ -63,7 +63,7 @@ try {
   if (!checkToken($token)) {
     returnJson(array(
       'status' => 'ERROR',
-      'message' => 'Invalid or missing upload secret',
+      'url' => 'Invalid or missing upload secret',
       // Remove this if you don't want to show the support URL
       'support' => "For support, visit - https://git.fascinated.cc/Fascinated/sharex-php-uploader",
       'timeTaken' => getTimeTaken()
@@ -75,7 +75,7 @@ try {
   if (!isset($file)) {
     returnJson(array(
       'status' => 'ERROR',
-      'message' => 'No file was uploaded',
+      'url' => 'No file was uploaded',
       'timeTaken' => getTimeTaken()
     ));
     die();
@@ -88,7 +88,7 @@ try {
   if (file_exists($uploadDir . $target_file)) {
     returnJson(array(
       'status' => 'ERROR',
-      'message' => 'File already exists',
+      'url' => 'File already exists',
       'timeTaken' => getTimeTaken()
     ));
     die();
@@ -115,13 +115,13 @@ try {
     if (move_uploaded_file($_FILES["sharex"]["tmp_name"], $uploadDir . $finalName)) {
       returnJson(array(
         'status' => 'OK',
-        'message' => 'File uploaded successfully',
+        'url' => 'File uploaded successfully',
         'timeTaken' => getTimeTaken()
       ));
     } else {
       returnJson(array(
         'status' => 'ERROR',
-        'message' => 'Failed to save file. Check the permissions of the upload directory.',
+        'url' => 'Failed to save file. Check the permissions of the upload directory.',
         'timeTaken' => getTimeTaken()
       ));
     }
@@ -129,14 +129,14 @@ try {
   }
   returnJson(array(
     'status' => 'OK',
-    'message' => 'File uploaded successfully',
+    'url' => 'File uploaded successfully',
     'timeTaken' => getTimeTaken()
   ));
   die();
 } catch (Exception $e) { // Handle any errors
   returnJson(array(
     'status' => 'ERROR',
-    'message' => $e->getMessage(),
+    'url' => $e->getMessage(),
     'timeTaken' => getTimeTaken()
   ));
   die();
