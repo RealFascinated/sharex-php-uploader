@@ -26,8 +26,8 @@ function returnJson($status, $message, $timeTaken = null) {
   die();
 }
 
-$token = $_POST['secret'];
-$file = $_FILES['sharex'];
+$token = $_POST['secret']; // The provided secret key
+$file = $_FILES['sharex']; // The uploaded file
 
 // Check if the token is valid
 if (!checkToken($token)) {
