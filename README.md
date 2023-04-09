@@ -10,11 +10,12 @@ This is a PHP script that lets you easily upload screenshots taken with the Shar
 ## Installation
 
 1. Find somewhere to host the script (Preferably more than 5GB of storage).
-2. Upload the files to your server.
-3. Edit the `upload.php` file to configure the script.
-4. Add the custom uploader to ShareX.
-5. Configure the custom uploader in ShareX.
-6. Test it!
+2. Check that your web server has the GD library installed. (See below for instructions on how to install it on Ubuntu.)
+3. Upload the files to your server.
+4. Edit the `upload.php` file to configure the script.
+5. Add the custom uploader to ShareX.
+6. Configure the custom uploader in ShareX.
+7. Test it!
 
 ## Help
 
