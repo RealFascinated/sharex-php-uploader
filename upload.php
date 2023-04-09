@@ -1,6 +1,5 @@
 <?php
 $before = microtime(true); // Start time of the script
-declare(strict_types=1);
 error_reporting(E_ERROR); // Hide PHP errors
 header('Content-type:application/json;charset=utf-8'); // Set the content type to JSON
 
