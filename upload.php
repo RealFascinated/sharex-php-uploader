@@ -15,7 +15,7 @@ $fileNameLength = 8; // The length of the random file name
 $webpThreadhold = 1048576; // 1MB - The minimum file size for converting to webp (in bytes)
 
 /**
- * Check if the token is valid
+ * Check if the given secret is valid
  */
 function checkSecret($token): bool
 {
