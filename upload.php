@@ -5,6 +5,8 @@ header('Content-type:application/json;charset=utf-8'); // Set the content type t
 error_reporting(E_ERROR); // Hide PHP errors
 $tokens = array("set me"); // Your secret keys
 $uploadDir = "./"; // The upload directory
+$useRandomFileNames = false; // Use random file names instead of the original file name
+$fileNameLength = 8; // The length of the random file name
 
 /**
  * Check if the token is valid
@@ -16,6 +18,19 @@ function checkToken($token) {
   } else {
     return false;
   }
+}
+
+/**
+ * Generate a random string
+ */
+function generateRandomString($length = 10) {
+  $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  $charactersLength = strlen($characters);
+  $randomString = '';
+  for ($i = 0; $i < $length; $i++) {
+    $randomString .= $characters[rand(0, $charactersLength - 1)];
+  }
+  return $randomString;
 }
 
 /**
@@ -54,21 +69,32 @@ if (file_exists($uploadDir . $target_file)) {
   die();
 }
 
-if (in_array($fileType, array("png", "jpeg", "jpg"))) {
-  // Convert to webp
-  $image = imagecreatefromstring(file_get_contents($_FILES["sharex"]["tmp_name"]));
-  $webp_file = pathinfo($target_file, PATHINFO_FILENAME) . ".webp";
-  imagewebp($image, $webp_file, 90);
-  imagedestroy($image);
-  $target_file = $webp_file;
+$shouldSave = true; // Whether or not the file should be saved
+$finalName = $target_file; // The final name of the file
+if ($useRandomFileNames) { // Generate a random file name if enabled
+  $finalName = generateRandomString($fileNameLength) . "." . $fileType;
 }
 
-// Move the file to the uploads folder
-if (move_uploaded_file($_FILES["sharex"]["tmp_name"], $uploadDir . $target_file)) {
-  $timeTaken = microtime(true) - $before;
-  returnJson('OK', $target_file, $timeTaken);
-} else {
-  $timeTaken = microtime(true) - $before;
-  returnJson('ERROR', 'File upload failed. Does the folder exist and did you CHMOD the folder?', $timeTaken);
+// Convert the image to webp if applicable
+if (in_array($fileType, array("png", "jpeg", "jpg"))) {
+  $image = imagecreatefromstring(file_get_contents($_FILES["sharex"]["tmp_name"]));
+  $webp_file = pathinfo($finalName, PATHINFO_FILENAME) . ".webp";
+  imagewebp($image, $webp_file, 90);
+  imagedestroy($image);
+  $finalName = $webp_file;
+  $shouldSave = false;
 }
+
+if ($shouldSave) {
+  // Move the file to the uploads folder
+  if (move_uploaded_file($_FILES["sharex"]["tmp_name"], $uploadDir . $finalName)) {
+    $timeTaken = microtime(true) - $before;
+    returnJson('OK', $finalName, $timeTaken);
+  } else {
+    $timeTaken = microtime(true) - $before;
+    returnJson('ERROR', 'File upload failed. Does the folder exist and did you CHMOD the folder?', $timeTaken);
+  }
+  die();
+}
+returnJson('OK', $finalName, $timeTaken);
 ?>
