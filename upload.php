@@ -10,7 +10,7 @@ $tokens = array("set me"); // Your secret keys
 $uploadDir = "./"; // The upload directory
 $useRandomFileNames = false; // Use random file names instead of the original file name
 $fileNameLength = 8; // The length of the random file name
-$webpThreadhold = 1048576; // The minimum file size for converting to webp (in bytes)
+$webpThreadhold = 1048576; // 1MB - The minimum file size for converting to webp (in bytes)
 
 /**
  * Check if the token is valid
@@ -98,6 +98,7 @@ try {
     die();
   }
   returnJson('OK', $finalName, $timeTaken);
+  die();
 } catch (Exception $e) { // Handle any errors
   $timeTaken = microtime(true) - $before;
   returnJson('ERROR', $e->getMessage(), $timeTaken);
