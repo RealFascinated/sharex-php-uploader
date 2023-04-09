@@ -20,6 +20,12 @@ This is a PHP script that lets you easily upload screenshots taken with the Shar
 
 If you need help, you can contact me on Discord at `Fascinated#7668`.
 
+## How to install GD Library on Ubuntu
+
+1. `sudo apt-get install php-gd`
+2. Add `extension=gd` to your php.ini file.
+3. Restart your web server and php.
+
 ## Other
 
 This project is worked on at my Gitea instance: <https://git.fascinated.cc/Fascinated/sharex-php-uploader>
