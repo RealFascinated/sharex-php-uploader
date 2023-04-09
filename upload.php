@@ -115,7 +115,7 @@ try {
     if (move_uploaded_file($_FILES["sharex"]["tmp_name"], $uploadDir . $finalName)) {
       returnJson(array(
         'status' => 'OK',
-        'url' => 'File uploaded successfully',
+        'url' => $finalName,
         'timeTaken' => getTimeTaken()
       ));
     } else {
