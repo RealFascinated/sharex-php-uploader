@@ -6,7 +6,7 @@ header('Content-type:application/json;charset=utf-8'); // Set the content type t
 /**
  * Configuration
  */
-$tokens = array("set me"); // Your secret keys
+$uploadSecrets = array("set me"); // Your secret keys
 $uploadDir = "./"; // The upload directory
 $useRandomFileNames = false; // Use random file names instead of the original file name
 $shouldConvertToWebp = true; // Should the script convert images to webp?
@@ -17,10 +17,10 @@ $webpThreadhold = 1048576; // 1MB - The minimum file size for converting to webp
 /**
  * Check if the token is valid
  */
-function checkToken($token): bool
+function checkSecret($token): bool
 {
-  global $tokens;
-  return isset($token) && in_array($token, $tokens);
+  global $uploadSecrets;
+  return isset($token) && in_array($token, $uploadSecrets);
 }
 
 /**
@@ -60,7 +60,7 @@ try {
   $file = $_FILES['sharex']; // The uploaded file
 
   // Check if the token is valid
-  if (!checkToken($token)) {
+  if (!checkSecret($token)) {
     returnJson(array(
       'status' => 'ERROR',
       'url' => 'Invalid or missing upload secret',
