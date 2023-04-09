@@ -93,12 +93,12 @@ try {
       returnJson('OK', $finalName, $timeTaken);
     } else {
       $timeTaken = microtime(true) - $before;
-      returnJson('ERROR', 'File upload failed. Does the folder exist and did you CHMOD the folder?', $timeTaken);
+      returnJson('ERROR', 'File upload failed. Does the upload folder exist and did you CHMOD the folder?', $timeTaken);
     }
     die();
   }
   returnJson('OK', $finalName, $timeTaken);
-} catch (Exception $e) {
+} catch (Exception $e) { // Handle any errors
   $timeTaken = microtime(true) - $before;
   returnJson('ERROR', $e->getMessage(), $timeTaken);
   die();
