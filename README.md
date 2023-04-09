@@ -19,3 +19,7 @@ This is a PHP script that lets you easily upload screenshots taken with the Shar
 ## Help
 
 If you need help, you can contact me on Discord at `Fascinated#7668`.
+
+## Other
+
+This project is worked on at my Gitea instance: <https://git.fascinated.cc/Fascinated/sharex-php-uploader>
