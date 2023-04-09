@@ -56,8 +56,8 @@ try {
     returnJson(array(
       'status' => 'ERROR',
       'message' => 'Invalid token',
-      'timeTaken' => $timeTaken,
-      'support' => "For support, visit - https://git.fascinated.cc/Fascinated/sharex-php-uploader"
+      'support' => "For support, visit - https://git.fascinated.cc/Fascinated/sharex-php-uploader",
+      'timeTaken' => $timeTaken
     ));
     die();
   }
