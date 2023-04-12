@@ -9,7 +9,7 @@ $uploadSecrets = array("set me"); // Your secret keys
 $uploadDir = "./"; // The upload directory
 $useRandomFileNames = false; // Use random file names instead of the original file name
 $shouldConvertToWebp = true; // Should the script convert images to webp?
-$webpQuality = 90; // The quality of the webp image (0-100)
+$webpQuality = 95; // The quality of the webp image (0-100)
 $fileNameLength = 8; // The length of the random file name
 $webpThreadhold = 1048576; // 1MB - The minimum file size for converting to webp (in bytes)
 
