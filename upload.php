@@ -1,7 +1,6 @@
 <?php
 $before = microtime(true); // Start time of the script
-error_reporting(E_ERROR); // Hide PHP errors
-header('Content-type:application/json;charset=utf-8'); // Set the content type to JSON
+header('Content-type:application/json;charset=utf-8'); // Set the response content type to JSON
 
 /**
  * Configuration
@@ -99,19 +98,20 @@ try {
     $finalName = generateRandomString($fileNameLength) . "." . $fileType;
   }
 
-  $saved = false; // Whether or not the file was saved
+  $needsToBeSaved = true; // Whether the file needs to be saved
 
-  // Convert the image to webp if applicable
-  if (in_array($fileType, array("png", "jpeg", "jpg")) && $_FILES["sharex"]["size"] > $webpThreadhold && $shouldConvertToWebp) {
-    $image = imagecreatefromstring(file_get_contents($_FILES["sharex"]["tmp_name"]));
-    $webp_file = pathinfo($finalName, PATHINFO_FILENAME) . ".webp";
-    imagewebp($image, $webp_file, $webpQuality); // Convert the image and save it
-    imagedestroy($image); // Free up memory
-    $finalName = $webp_file;
-    $saved = true;
+  if ($shouldConvertToWebp) { // Convert the image to webp if applicable
+    if (in_array($fileType, array("png", "jpeg", "jpg")) && $_FILES["sharex"]["size"] > $webpThreadhold) {
+      $image = imagecreatefromstring(file_get_contents($_FILES["sharex"]["tmp_name"]));
+      $webp_file = pathinfo($finalName, PATHINFO_FILENAME) . ".webp";
+      imagewebp($image, $webp_file, $webpQuality); // Convert the image and save it
+      imagedestroy($image); // Free up memory
+      $finalName = $webp_file;
+      $needsToBeSaved = false;
+    }
   }
 
-  if (!$saved) { // If the file wasn't saved (e.g. webp conversion)
+  if ($needsToBeSaved) { // Save the file if it has not been saved yet
     // Move the file to the uploads folder
     $success = move_uploaded_file($_FILES["sharex"]["tmp_name"], $uploadDir . $finalName);
     if (!$success) {
