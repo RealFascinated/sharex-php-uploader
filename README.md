@@ -7,6 +7,11 @@ This PHP script allows you to effortlessly upload your ShareX app screenshots to
 - Effortlessly upload screenshots to your website using ShareX.
 - Automatically convert screenshots to WebP format.
 
+## Requirements
+
+- PHP (Tested on PHP 8.1.12-1ubuntu4)
+- GD Library (If using webp conversion)
+
 ## Installation
 
 To install this script:
