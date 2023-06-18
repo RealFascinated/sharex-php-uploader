@@ -21,7 +21,7 @@ To install this script:
 
 ## Need Help?
 
-If you require assistance, feel free to contact me via Discord at Fascinated#7668.
+If you require assistance, feel free to contact me via Discord at `fascinated7`.
 
 ## How to Install GD Library on Ubuntu
 
