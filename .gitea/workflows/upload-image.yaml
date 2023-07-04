@@ -8,7 +8,7 @@ jobs:
   docker:
     strategy:
       matrix:
-        arch: ["ubuntu-latest"]
+        arch: ["ubuntu-latest:20.04"]
         git-version: ["2.38.4"]
       max-parallel: 3
       fail-fast: true
