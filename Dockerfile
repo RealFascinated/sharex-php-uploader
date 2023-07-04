@@ -12,5 +12,8 @@ COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 COPY ./upload.php /tmp/upload.php
 COPY ./docker/start.sh /start.sh
 
+# Start php dependencies
+RUN service php8.1-fpm start
+
 # Start server
 CMD ["bash", "/start.sh"]
