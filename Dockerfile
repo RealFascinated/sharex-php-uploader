@@ -9,6 +9,7 @@ apt install nginx php-fpm php-gd -y
 COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 
 # Setup scripts
+COPY ./upload.php /tmp/upload.php
 COPY ./docker/start.sh /start.sh
 
 # Start server
