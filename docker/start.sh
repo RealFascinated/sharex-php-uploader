@@ -10,6 +10,9 @@ else
     echo "Upload script was not found, copying it."
 fi
 
+echo "Setting permissions for upload script"
+chmod 777 /var/www/html/upload.php
+
 # Start php dep
 echo "Starting PHP"
 service php8.1-fpm start
