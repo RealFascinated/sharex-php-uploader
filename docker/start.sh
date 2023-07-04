@@ -6,6 +6,10 @@ else
     echo "Upload script was not found, copying it."
 fi
 
+# Start php dep
+echo "Starting PHP"
+service php8.1-fpm start
+
 # Start Nginx
 echo "Starting Nginx"
 nginx -g "daemon off;"
