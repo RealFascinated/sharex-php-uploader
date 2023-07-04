@@ -1,6 +1,6 @@
 # ShareX Upload Script
 
-This PHP script allows you to effortlessly upload your ShareX app screenshots to your website. ShareX is a widely-used Windows screenshot tool that enables users to take screenshots, annotate them, and share them online.
+This PHP script allows you to easily upload ShareX screenshots and videos. It includes token authentication for security and can handle various image file types by converting them to WebP format for efficient storage.
 
 ## Features
 
