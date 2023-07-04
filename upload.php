@@ -70,6 +70,16 @@ try {
     die();
   }
 
+  // Check if the secret is the default one, and if so, tell the user to change it
+  if ($secret == "set me") {
+    returnJson(array(
+      'status' => 'ERROR',
+      'url' => 'You need to set your upload secret in the configuration section of the upload.php file',
+      'timeTaken' => getTimeTaken()
+    ));
+    die();
+  }
+
   // Check if the file was uploaded
   if (!isset($file)) {
     returnJson(array(
