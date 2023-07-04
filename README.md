@@ -9,7 +9,7 @@ This PHP script allows you to easily upload ShareX screenshots and videos. It in
 
 ## Requirements
 
-- Docker
+- Docker (If using Docker installation method)
 - ShareX
 
 ## Installation
