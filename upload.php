@@ -1,5 +1,10 @@
 <?php
+
+/**
+ * DO NOT TOUCH!!!!!!!!
+ */
 $before = microtime(true); // Start time of the script
+$defaultSecretKey = "set me"; // The default secret key
 header('Content-type:application/json;charset=utf-8'); // Set the response content type to JSON
 
 /**
@@ -76,7 +81,7 @@ try {
   }
 
   // Check if the secret is the default one, and if so, tell the user to change it
-  if ($secret == "set me") {
+  if ($secret == $defaultSecretKey) {
     returnJson(array(
       'status' => 'ERROR',
       'url' => 'You need to set your upload secret in the configuration section of the upload.php file',
