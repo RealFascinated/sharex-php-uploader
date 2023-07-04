@@ -1,0 +1,14 @@
+version: "3.4"
+
+services:
+  sharex-php-uploader:
+    build: https://git.fascinated.cc/Fascinated/sharex-php-uploader.git
+    # Use this below if you want to build the image locally (you need to clone the repo first)
+    # build: .
+    # image: fascinated/sharex-php-uploader
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      # Where to store the uploaded files
+      - ./uploads:/var/www/html
