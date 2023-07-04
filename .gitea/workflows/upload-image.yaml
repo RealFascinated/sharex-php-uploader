@@ -1,0 +1,40 @@
+Actions name: Publish Docker Image
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  docker:
+    strategy:
+      matrix:
+        arch: ["ubuntu-latest"]
+        git-version: ["2.38.4"]
+      max-parallel: 3
+      fail-fast: true
+    runs-on: ${{ matrix.arch }}
+    steps:
+      - name: Checkout
+        uses: https://github.com/actions/checkout@v3
+
+      - name: Download Docker
+        run: |
+          wget -q -O /tmp/docker.tgz https://download.docker.com/linux/static/stable/x86_64/docker-20.10.23.tgz \
+          && tar --extract --file /tmp/docker.tgz --directory /usr/bin --strip-components 1 --no-same-owner docker/docker \
+          && rm -rf /tmp/*
+
+      - name: Set up Docker Buildx
+        uses: https://github.com/docker/setup-buildx-action@v2
+
+      - name: Login to Repo
+        uses: https://github.com/docker/login-action@v2
+        with:
+          username: ${{ secrets.REPO_USERNAME }}
+          password: ${{ secrets.REPO_TOKEN }}
+
+      - name: Build and Push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          context: .
+          tags: fascinated/sharex-php-uploader:latest
