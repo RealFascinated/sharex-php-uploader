@@ -7,6 +7,8 @@ services:
     # build: .
     # image: fascinated/sharex-php-uploader
     restart: always
+    environment:
+      - MAX_UPLOAD_SIZE=500M
     ports:
       - 80:80
     volumes:

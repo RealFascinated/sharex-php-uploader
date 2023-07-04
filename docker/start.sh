@@ -11,6 +11,13 @@ echo "Starting PHP"
 service php8.1-fpm start
 chmod 777 /run/php/php8.1-fpm.sock # I don't know how to fix this properly, but it works.
 
+echo "Setting max upload size to ${MAX_UPLOAD_SIZE}"
+sed -i "s/^upload_max_filesize = .*/upload_max_filesize = ${MAX_UPLOAD_SIZE}/" /etc/php/8.1/fpm/php.ini
+sed -i "s/^post_max_size = .*/post_max_size = ${MAX_UPLOAD_SIZE}/" /etc/php/8.1/fpm/php.ini
+
+# Restart php to apply changes
+service php8.1-fpm restart
+
 # Start Nginx
 echo "Starting Nginx"
 nginx -g "daemon off;"
