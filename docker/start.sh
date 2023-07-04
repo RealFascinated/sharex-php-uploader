@@ -1,3 +1,7 @@
+if [[ -z "${MAX_UPLOAD_SIZE}" ]]; then
+  MAX_UPLOAD_SIZE="8M"  # Default fallback value
+fi
+
 echo "Checking if upload script exists in /var/www/html"
 if [ -f "/var/www/html/upload.php" ]; then
     echo "Upload script was found, ignoring copy."
