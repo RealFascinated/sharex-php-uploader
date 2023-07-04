@@ -6,13 +6,7 @@ on:
 
 jobs:
   docker:
-    strategy:
-      matrix:
-        arch: ["ubuntu-latest:20.04"]
-        git-version: ["2.38.4"]
-      max-parallel: 3
-      fail-fast: true
-    runs-on: ${{ matrix.arch }}
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: https://github.com/actions/checkout@v3
