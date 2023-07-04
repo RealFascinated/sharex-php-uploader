@@ -9,6 +9,7 @@ fi
 # Start php dep
 echo "Starting PHP"
 service php8.1-fpm start
+chmod 777 /run/php/php8.1-fpm.sock # I don't know how to fix this properly, but it works.
 
 # Start Nginx
 echo "Starting Nginx"
