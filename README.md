@@ -28,6 +28,15 @@ This PHP script allows you to effortlessly upload your ShareX app screenshots to
 3. Restart the container.
 4. Go to Post Installation to configure ShareX.
 
+## Installation (Without Docker - Ubuntu)
+
+This installation method is not recommended as I cannot provide instructions for every single Linux distribution. If you don't know what you're doing, use the Docker installation method.
+
+1. Verify that your web server has the GD library installed. If not, run `sudo apt install php-gd` to install it.
+2. Upload the `upload.php` file to your server.
+3. Edit the `upload.php` file to configure the script.
+4. Go to Post Installation to configure ShareX.
+
 ## Post Installation
 
 1. Open ShareX and go to Destinations > Custom Uploader Settings.
