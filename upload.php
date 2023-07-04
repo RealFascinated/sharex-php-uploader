@@ -30,9 +30,14 @@ function generateRandomString($length = 10): string
   $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   $charactersLength = strlen($characters);
   $randomString = '';
+
   for ($i = 0; $i < $length; $i++) {
-    $randomString .= $characters[rand(0, $charactersLength - 1)];
+    // Shuffle the characters array
+    $shuffledCharacters = str_shuffle($characters);
+    $randomIndex = random_int(0, $charactersLength - 1);
+    $randomString .= $shuffledCharacters[$randomIndex];
   }
+
   return $randomString;
 }
 
