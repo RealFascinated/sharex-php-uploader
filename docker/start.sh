@@ -18,8 +18,13 @@ echo "Starting PHP"
 service php8.1-fpm start
 
 echo "Setting max upload size to ${MAX_UPLOAD_SIZE}"
+
+# Set max upload size for php
 sed -i "s/^upload_max_filesize = .*/upload_max_filesize = ${MAX_UPLOAD_SIZE}/" /etc/php/8.1/fpm/php.ini
 sed -i "s/^post_max_size = .*/post_max_size = ${MAX_UPLOAD_SIZE}/" /etc/php/8.1/fpm/php.ini
+
+# Set max upload size for nginx
+sed -i "s/client_max_body_size 500M;/client_max_body_size ${MAX_UPLOAD_SIZE};/" /etc/nginx/nginx.conf
 
 # Restart php to apply changes
 echo "Restarting PHP to apply changes for max upload size"
