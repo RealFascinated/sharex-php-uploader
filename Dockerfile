@@ -7,7 +7,6 @@ apt install nginx php-fpm php-gd -y
 
 # Set up nginx
 COPY ./docker/nginx.conf /etc/nginx/nginx.conf
-RUN mkdir -p /var/www/html
 
 # Setup scripts
 COPY ./docker/start.sh /start.sh
