@@ -13,7 +13,7 @@ fi
 echo "Setting permissions for upload script"
 chmod 777 /var/www/html/upload.php
 
-# Start php dep
+# Start php dependencies
 echo "Starting PHP"
 service php8.1-fpm start
 
