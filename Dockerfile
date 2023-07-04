@@ -6,9 +6,11 @@ RUN DEBIAN_FRONTEND=noninteractive \
 apt install nginx php-fpm php-gd -y
 
 # Set up nginx
-COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 RUN mkdir -p /var/www/html
-COPY ./upload.php /var/www/html/index.php
 
-# Start NGINX
-CMD ["nginx", "-g", "daemon off;"]
+# Setup scripts
+COPY ./docker/start.sh /start.sh
+
+# Start server
+CMD ["bash", "/start.sh"]
