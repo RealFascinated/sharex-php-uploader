@@ -2,7 +2,8 @@ FROM ubuntu:22.04
 
 # Install dependencies
 RUN apt update
-RUN apt install nginx php-fpm php-gd -y
+RUN DEBIAN_FRONTEND=noninteractive \
+apt install nginx php-fpm php-gd -y
 
 # Set up nginx
 COPY ./conf/nginx.conf /etc/nginx/nginx.conf
