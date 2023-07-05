@@ -26,6 +26,9 @@ sed -i "s/^post_max_size = .*/post_max_size = ${MAX_UPLOAD_SIZE}/" /etc/php/8.1/
 # Set max upload size for nginx
 sed -i "s/client_max_body_size 500M;/client_max_body_size ${MAX_UPLOAD_SIZE};/" /etc/nginx/nginx.conf
 
+# Setting env variable in php-fpm
+echo "env[MAX_UPLOAD_SIZE] = ${MAX_UPLOAD_SIZE}" >> /etc/php/8.1/fpm/pool.d/www.conf
+
 # Restart php to apply changes
 echo "Restarting PHP to apply changes for max upload size"
 service php8.1-fpm restart
