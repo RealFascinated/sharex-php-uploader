@@ -13,7 +13,7 @@ services:
     environment:
       - TZ=America/Los_Angeles
       - MAX_UPLOAD_SIZE=500M
-      - UPLOAD_SECRETS=zMxvHmRRjoS4QXQo
+      - UPLOAD_SECRETS=set me
       - UPLOAD_DIR=./
       - USE_RANDOM_FILE_NAMES=true
       - SHOULD_CONVERT_TO_WEBP=true
