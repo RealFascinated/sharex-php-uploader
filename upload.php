@@ -15,10 +15,10 @@ if (getenv('DOCKER')) { // If the script is running in a Docker container
   $uploadSecrets = explode(",", getenv('UPLOAD_SECRETS')); // The upload secrets
   $uploadDir = getenv('UPLOAD_DIR'); // The upload directory
   $useRandomFileNames = getenv('USE_RANDOM_FILE_NAMES'); // Use random file names instead of the original file name
+  $fileNameLength = getenv('FILE_NAME_LENGTH'); // The length of the random file name
   $shouldConvertToWebp = getenv('SHOULD_CONVERT_TO_WEBP'); // Should the script convert images to webp?
   $webpQuality =  getenv('WEBP_QUALITY'); // The quality of the webp image (0-100)
   $webpThreadhold = getenv('WEBP_THREADHOLD'); // The minimum file size for converting to webp (in bytes)
-  $fileNameLength = getenv('FILE_NAME_LENGTH'); // The length of the random file name
 } else {
   /**
    * !!!
@@ -28,10 +28,10 @@ if (getenv('DOCKER')) { // If the script is running in a Docker container
   $uploadSecrets = array("set me"); // The upload secrets
   $uploadDir = "./"; // The upload directory
   $useRandomFileNames = false; // Use random file names instead of the original file name
+  $fileNameLength = 8; // The length of the random file name
   $shouldConvertToWebp = true; // Should the script convert images to webp?
   $webpQuality = 95; // The quality of the webp image (0-100)
   $webpThreadhold = 1048576; // 1MB - The minimum file size for converting to webp (in bytes)
-  $fileNameLength = 8; // The length of the random file name
 }
 
 /**
