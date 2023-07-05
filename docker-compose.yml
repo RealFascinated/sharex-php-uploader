@@ -16,7 +16,7 @@ services:
       - USE_RANDOM_FILE_NAMES=true # If true, the uploaded files will be renamed to a random string
       - FILE_NAME_LENGTH=8 # The length of the random file name
       - SHOULD_CONVERT_TO_WEBP=true # If true, the uploaded files will be converted to webp
-      - WEBP_QUALITY=95 # The quality of the converted webp files
+      - WEBP_QUALITY=95 # The quality of the converted webp files (0-100 - higher is better)
       - WEBP_THREADHOLD=1048576 # The minimum file size to convert to webp (1MB in bytes)
     ports:
       - 80:80
