@@ -8,6 +8,7 @@ services:
     restart: always
     environment:
       - MAX_UPLOAD_SIZE=500M
+      - UPLOAD_SECRETS=set me # You can add multiple secrets. Format: secret1,secret2,secret3
     ports:
       - 80:80
     volumes:

@@ -10,7 +10,13 @@ header('Content-type:application/json;charset=utf-8'); // Set the response conte
 /**
  * Configuration
  */
-$uploadSecrets = array("set me"); // Your secret keys
+$uploadSecrets;
+// Check if the environment variable UPLOAD_SECRETS is set
+if (getenv('UPLOAD_SECRETS')) {
+  $uploadSecrets = explode(",", getenv('UPLOAD_SECRETS'));
+} else {
+  $uploadSecrets = array("set me"); // Use this if you are not using environment variables (eg: Not using Docker)
+}
 $uploadDir = "./"; // The upload directory
 $useRandomFileNames = false; // Use random file names instead of the original file name
 $shouldConvertToWebp = true; // Should the script convert images to webp?
