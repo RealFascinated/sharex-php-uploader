@@ -12,14 +12,17 @@ fi
 
 # Letting php know that we are running in docker
 echo "env[DOCKER] = true" >> /etc/php/8.1/fpm/pool.d/www.conf
-echo "env[UPLOAD_SECRETS] = ${UPLOAD_SECRETS}" >> /etc/php/8.1/fpm/pool.d/www.conf
 
-echo "env[UPLOAD_DIR] = ${UPLOAD_DIR}" >> /etc/php/8.1/fpm/pool.d/www.conf
-echo "env[USE_RANDOM_FILE_NAMES] = ${USE_RANDOM_FILE_NAMES}" >> /etc/php/8.1/fpm/pool.d/www.conf
-echo "env[FILE_NAME_LENGTH] = ${FILE_NAME_LENGTH}" >> /etc/php/8.1/fpm/pool.d/www.conf
-echo "env[SHOULD_CONVERT_TO_WEBP] = ${SHOULD_CONVERT_TO_WEBP}" >> /etc/php/8.1/fpm/pool.d/www.conf
-echo "env[WEBP_QUALITY] = ${WEBP_QUALITY}" >> /etc/php/8.1/fpm/pool.d/www.conf
-echo "env[WEBP_THREADHOLD] = ${WEBP_THREADHOLD}" >> /etc/php/8.1/fpm/pool.d/www.conf
+echo "clear_env = no" >> /etc/php/8.1/fpm/pool.d/www.conf
+
+# echo "env[UPLOAD_SECRETS] = ${UPLOAD_SECRETS}" >> /etc/php/8.1/fpm/pool.d/www.conf
+
+# echo "env[UPLOAD_DIR] = ${UPLOAD_DIR}" >> /etc/php/8.1/fpm/pool.d/www.conf
+# echo "env[USE_RANDOM_FILE_NAMES] = ${USE_RANDOM_FILE_NAMES}" >> /etc/php/8.1/fpm/pool.d/www.conf
+# echo "env[FILE_NAME_LENGTH] = ${FILE_NAME_LENGTH}" >> /etc/php/8.1/fpm/pool.d/www.conf
+# echo "env[SHOULD_CONVERT_TO_WEBP] = ${SHOULD_CONVERT_TO_WEBP}" >> /etc/php/8.1/fpm/pool.d/www.conf
+# echo "env[WEBP_QUALITY] = ${WEBP_QUALITY}" >> /etc/php/8.1/fpm/pool.d/www.conf
+# echo "env[WEBP_THREADHOLD] = ${WEBP_THREADHOLD}" >> /etc/php/8.1/fpm/pool.d/www.conf
 
 echo "Setting permissions for upload script"
 chmod 777 /var/www/html/upload.php
