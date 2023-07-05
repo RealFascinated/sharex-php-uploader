@@ -11,8 +11,8 @@ else
 fi
 
 # Letting php know that we are running in docker
-echo "env[DOCKER] = true" >> /etc/php/8.1/fpm/conf.d/99-docker.ini
-echo "clear_env = no" >> /etc/php/8.1/fpm/conf.d/99-docker.ini
+echo "env[DOCKER] = true" >> /etc/php/8.1/fpm/pool.d/www.conf
+echo "clear_env = no" >> /etc/php/8.1/fpm/php-fpm.conf
 
 # echo "env[UPLOAD_SECRETS] = ${UPLOAD_SECRETS}" >> /etc/php/8.1/fpm/pool.d/www.conf
 
