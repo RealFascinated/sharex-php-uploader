@@ -5,6 +5,9 @@ services:
     image: fascinated/sharex-php-uploader:latest
     # Uncomment the following line to build the image yourself
     # build: https://git.fascinated.cc/Fascinated/sharex-php-uploader.git
+    # or build it locally (you need to clone the repo first):
+    # build:
+    #   context: .
     restart: always
     environment:
       - MAX_UPLOAD_SIZE=500M
