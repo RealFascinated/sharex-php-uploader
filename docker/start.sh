@@ -37,6 +37,6 @@ sed -i "s/client_max_body_size 500M;/client_max_body_size ${MAX_UPLOAD_SIZE};/" 
 
 # Start Nginx
 echo "Starting PHP & Nginx"
-/etc/init.d/php8.1-fpm start \
-chmod 777 /run/php/php8.1-fpm.sock \
+/etc/init.d/php8.1-fpm start &&
+chmod 777 /run/php/php8.1-fpm.sock &&
 nginx -g 'daemon off;'
