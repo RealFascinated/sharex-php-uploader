@@ -23,7 +23,7 @@ services:
     ports:
       - "80:80/tcp"
     volumes:
-      - "/home/fascinated-cdn/uploads:/var/www/html:rw"
+      - "./uploads:/var/www/html:rw"
     networks:
       - bridge
 
