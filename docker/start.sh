@@ -12,7 +12,7 @@ fi
 
 # Letting php know that we are running in docker
 echo "env[DOCKER] = true" >> /etc/php/8.1/fpm/pool.d/www.conf
-echo "clear_env = no" >> /etc/php/8.1/fpm/php-fpm.conf
+echo "clear_env = no" >> /etc/php/8.1/fpm/pool.d/www.conf
 
 # echo "env[UPLOAD_SECRETS] = ${UPLOAD_SECRETS}" >> /etc/php/8.1/fpm/pool.d/www.conf
 
@@ -26,10 +26,6 @@ echo "clear_env = no" >> /etc/php/8.1/fpm/php-fpm.conf
 echo "Setting permissions for upload script"
 chmod 777 /var/www/html/upload.php
 
-# Start php dependencies
-echo "Starting PHP"
-service php8.1-fpm start
-
 echo "Setting max upload size to ${MAX_UPLOAD_SIZE}"
 
 # Set max upload size for php
@@ -39,13 +35,9 @@ sed -i "s/^post_max_size = .*/post_max_size = ${MAX_UPLOAD_SIZE}/" /etc/php/8.1/
 # Set max upload size for nginx
 sed -i "s/client_max_body_size 500M;/client_max_body_size ${MAX_UPLOAD_SIZE};/" /etc/nginx/nginx.conf
 
-# Restart php to apply changes
-echo "Restarting PHP to apply changes for max upload size"
-service php8.1-fpm restart
-
 # I don't know how to fix this properly, but it works.
-chmod 777 /run/php/php8.1-fpm.sock
+#chmod 777 /run/php/php8.1-fpm.sock
 
 # Start Nginx
-echo "Starting Nginx"
-nginx -g "daemon off;"
+echo "Starting PHP & Nginx"
+CMD /etc/init.d/php8.1-fpm start && nginx -g 'daemon off;'
