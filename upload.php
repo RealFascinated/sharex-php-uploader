@@ -136,15 +136,28 @@ try {
 
   $needsToBeSaved = true; // Whether the file needs to be saved
 
-  if ($shouldConvertToWebp) { // Convert the image to webp if applicable
-    if (in_array($fileType, array("png", "jpeg", "jpg")) && $_FILES["sharex"]["size"] > $webpThreadhold) {
-      $image = imagecreatefromstring(file_get_contents($_FILES["sharex"]["tmp_name"]));
-      $webp_file = pathinfo($finalName, PATHINFO_FILENAME) . ".webp";
-      imagewebp($image, $webp_file, $webpQuality); // Convert the image and save it
-      imagedestroy($image); // Free up memory
-      $finalName = $webp_file;
-      $needsToBeSaved = false;
-    }
+  // Check the file type and size
+  if ($shouldConvertToWebp && in_array($fileType, ["png", "jpeg", "jpg"]) && $_FILES["sharex"]["size"] > $webpThreadhold) {
+    // Create an Imagick object from the uploaded file
+    $image = new Imagick($_FILES["sharex"]["tmp_name"]);
+
+    // Convert the image to WebP
+    $image->setImageFormat("webp");
+    $image->setImageCompressionQuality($webpQuality);
+
+    // Set the output filename
+    $webp_file = pathinfo($finalName, PATHINFO_FILENAME) . ".webp";
+
+    // Save the converted image
+    $image->writeImage($webp_file);
+
+    // Free up memory
+    $image->clear();
+    $image->destroy();
+
+    // Update the final filename
+    $finalName = $webp_file;
+    $needsToBeSaved = false;
   }
 
   if ($needsToBeSaved) { // Save the file if it has not been saved yet
