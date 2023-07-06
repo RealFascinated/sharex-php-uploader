@@ -42,7 +42,8 @@ This installation method is not recommended as I cannot provide instructions for
 1. Open ShareX and go to Destinations > Custom Uploader Settings.
 2. Click on Import > From URL and enter `https://git.fascinated.cc/Fascinated/sharex-php-uploader/raw/branch/master/sharex.sxcu`.
 3. Edit the URL to your website's URL.
-4. Click on Test after you've edited the URL and it should return a URL. If it doesn't, check your settings or contact me.
+4. Edit the secret to the secret you set in either the enviornment variable or in the script
+5. Click on Test after you've edited the URL and it should return a URL. If it doesn't, check your settings or contact me.
 
 ## Need Help?
 
