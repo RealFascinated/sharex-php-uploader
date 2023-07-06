@@ -1,4 +1,4 @@
-Actions name: Publish Docker Image
+Actions name: Publish Docker Image (Development)
 on:
   push:
     branches:
