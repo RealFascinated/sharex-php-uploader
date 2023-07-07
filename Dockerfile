@@ -14,4 +14,4 @@ COPY ./upload.php /tmp/upload.php
 COPY ./docker/start.sh /start.sh
 
 # Start server
-CMD ["bash", "/start.sh"]
+CMD ["sh", "/start.sh"]
