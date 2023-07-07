@@ -93,7 +93,7 @@ try {
   $secret = $_POST['secret']; // The secret key
   $file = $_FILES['sharex']; // The uploaded file
 
-  // Page to show if someone visits the upload page
+  // Page to show if someone visits the upload script
   if (!$secret && !$file) {
     returnJson(array(
       'status' => 'OK',
