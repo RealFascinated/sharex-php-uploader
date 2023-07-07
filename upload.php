@@ -90,11 +90,11 @@ function logToNginx($message): void
 }
 
 try {
-  $secret = $_POST['secret']; // The secret key
-  $file = $_FILES['sharex']; // The uploaded file
+  $secret = isset($_POST['secret']) ? $_POST['secret'] : null; // The secret key
+  $file = isset($_FILES['sharex']) ? $_FILES['sharex'] : null; // The uploaded file
 
   // Page to show if someone visits the upload script
-  if (!$secret && !$file) {
+  if ($secret == null && $file == null) {
     returnJson(array(
       'status' => 'OK',
       'url' => 'Welcome to the ShareX PHP Uploader! v' . $SCRIPT_VERSION,
