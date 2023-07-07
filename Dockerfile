@@ -3,7 +3,7 @@ FROM alpine:3.18.2
 # Install dependencies
 RUN apk update && \
     apk upgrade && \
-    apk add --no-cache nginx php8 php8-fpm && \
+    apk add --no-cache nginx php php-fpm && \
     rm -rf /var/cache/apk/*
 
 # Set up nginx
