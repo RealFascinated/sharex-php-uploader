@@ -1,12 +1,10 @@
-FROM ubuntu:23.04
+FROM alpine:3.18.2
 
 # Install dependencies
-RUN apt update
-RUN DEBIAN_FRONTEND=noninteractive \
-apt install nginx php8.1 php8.1-fpm php8.1-gd php8.1-imagick -y
-
-# Clean up
-RUN apt clean
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache nginx php81 php81-fpm php81-gd && \
+    rm -rf /var/cache/apk/*
 
 # Set up nginx
 COPY ./docker/nginx.conf /etc/nginx/nginx.conf
@@ -16,4 +14,4 @@ COPY ./upload.php /tmp/upload.php
 COPY ./docker/start.sh /start.sh
 
 # Start server
-CMD ["bash", "/start.sh"]
+CMD ["sh", "/start.sh"]
