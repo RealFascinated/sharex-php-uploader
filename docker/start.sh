@@ -1,7 +1,9 @@
 #!/bin/sh
 
+# TODO: add all the other fallback values for the other variables
 if [ -z "$MAX_UPLOAD_SIZE" ]; then
   MAX_UPLOAD_SIZE="8M"  # Default fallback value
+  echo "MAX_UPLOAD_SIZE was not set, using default value of ${MAX_UPLOAD_SIZE}"
 fi
 
 echo "Checking if upload script exists in /var/www/html"
