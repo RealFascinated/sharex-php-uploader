@@ -1,7 +1,5 @@
 FROM alpine:3.18.2
 
-ADD https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions /usr/local/bin/
-
 # Install dependencies
 RUN apk update && \
     apk upgrade && \
@@ -9,8 +7,13 @@ RUN apk update && \
     rm -rf /var/cache/apk/*
 
 # Install Imagick
-RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
-    install-php-extensions imagick
+RUN set -ex \
+    && apk add --no-cache --virtual .phpize-deps $PHPIZE_DEPS imagemagick-dev libtool \
+    && export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" \
+    && pecl install imagick-3.4.3 \
+    && docker-php-ext-enable imagick \
+    && apk add --no-cache --virtual .imagick-runtime-deps imagemagick \
+    && apk del .phpize-deps
 
 # Set up nginx
 COPY ./docker/nginx.conf /etc/nginx/nginx.conf
