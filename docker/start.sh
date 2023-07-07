@@ -17,7 +17,7 @@ echo "env[DOCKER] = true" >> /etc/php81/php-fpm.d/www.conf
 echo "clear_env = no" >> /etc/php81/php-fpm.d/www.conf
 
 # Set php-fpm to listen on socket
-sed -i 's/^listen = .*/listen = \/run\/php\/php.sock/' /etc/php8.1/php-fpm.d/www.conf
+sed -i 's/^listen = .*/listen = \/run\/php\/php.sock/' /etc/php81/php-fpm.d/www.conf
 
 echo "Setting permissions for upload script"
 chmod 777 /var/www/html/upload.php
