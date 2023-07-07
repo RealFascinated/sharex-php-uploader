@@ -40,6 +40,7 @@ sed -i "s/client_max_body_size 500M;/client_max_body_size ${MAX_UPLOAD_SIZE};/" 
 function start() {
   echo "Starting PHP & Nginx"
   php-fpm81 &&
+  chmod 777 /run/php/php.sock &&
   nginx -g 'daemon off;'
 }
 
