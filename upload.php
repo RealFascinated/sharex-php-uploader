@@ -162,28 +162,13 @@ try {
 
   // Check the file type and size
   if ($shouldConvertToWebp && in_array($fileType, ["png", "jpeg", "jpg"]) && $_FILES["sharex"]["size"] > $webpThreadhold) {
-    // Create an Imagick object from the uploaded file
-    $image = new Imagick($_FILES["sharex"]["tmp_name"]);
-
-    // Convert the image to WebP
-    $image->setImageFormat("webp");
-    $image->setImageCompressionQuality($webpQuality);
-
-    // Set the output filename
+    $image = imagecreatefromstring(file_get_contents($_FILES["sharex"]["tmp_name"]));
     $webp_file = pathinfo($finalName, PATHINFO_FILENAME) . ".webp";
-
-    // Save the converted image
-    $image->writeImage($webp_file);
-
-    // Free up memory
-    $image->clear();
-    $image->destroy();
-
-    $fileSize = filesize($webp_file); // Update the file size
-
-    // Update the final filename
+    imagewebp($image, $webp_file, 90); // Convert the image and save it
+    imagedestroy($image); // Free up memory
     $finalName = $webp_file;
-    $needsToBeSaved = false;
+    $shouldSave = false;
+    $fileSize = filesize($webp_file); // Update the file size
   }
 
   if ($needsToBeSaved) { // Save the file if it has not been saved yet
