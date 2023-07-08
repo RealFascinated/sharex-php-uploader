@@ -11,11 +11,12 @@ jobs:
       - name: Checkout
         uses: https://github.com/actions/checkout@v3
 
-      - uses: actions/cache@v3
+      - name: Cache Docker
+        uses: actions/cache@v3
         id: docker-cache
         with:
           path: /usr/bin/docker
-          key: ${{ runner.os }}-${{ hashFiles('**') }}
+          key: ${{ runner.os }}-docker
 
       - name: Install Docker
         if: steps.docker-cache.outputs.cache-hit != 'true'
