@@ -35,6 +35,15 @@ jobs:
           username: ${{ secrets.REPO_USERNAME }}
           password: ${{ secrets.REPO_TOKEN }}
 
+      - name: Cache Docker Build Steps
+        uses: actions/cache@v2
+        id: docker-build-cache
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-build-${{ hashFiles('**/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-build-
+
       - name: Build and Push
         uses: docker/build-push-action@v4
         with:
