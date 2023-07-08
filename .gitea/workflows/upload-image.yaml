@@ -53,8 +53,19 @@ jobs:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx
 
-      - name: Build and Push
+      - name: Build and Push (Latest)
         uses: docker/build-push-action@v4
+        if: steps.branch-name.outputs.current_branch == 'master'
+        with:
+          push: true
+          context: .
+          tags: fascinated/sharex-php-uploader:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+
+      - name: Build and Push (Other Branches)
+        uses: docker/build-push-action@v4
+        if: steps.branch-name.outputs.current_branch != 'master'
         with:
           push: true
           context: .
