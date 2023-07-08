@@ -58,7 +58,12 @@ jobs:
         with:
           push: true
           context: .
-          tags: fascinated/sharex-php-uploader:${{ steps.branch-name.outputs.current_branch }}
+          tags: |
+            {{ if eq(steps.branch-name.outputs.current_branch, 'master') }}
+              fascinated/sharex-php-uploader:latest
+            {{ else }}
+              fascinated/sharex-php-uploader:${{ steps.branch-name.outputs.current_branch }}
+            {{ endif }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
