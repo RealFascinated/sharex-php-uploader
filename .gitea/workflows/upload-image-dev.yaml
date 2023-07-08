@@ -35,14 +35,13 @@ jobs:
           username: ${{ secrets.REPO_USERNAME }}
           password: ${{ secrets.REPO_TOKEN }}
 
-      - name: Cache Docker Build Steps
-        uses: actions/cache@v2
-        id: docker-build-cache
+      - name: Restore Docker Build Cache
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-docker-build-${{ hashFiles('**/Dockerfile') }}
+          key: ${{ runner.os }}-buildx
           restore-keys: |
-            ${{ runner.os }}-docker-build-
+            ${{ runner.os }}-buildx
 
       - name: Build and Push
         uses: docker/build-push-action@v4
@@ -50,3 +49,11 @@ jobs:
           push: true
           context: .
           tags: fascinated/sharex-php-uploader:latest
+
+      - name: Save Docker Build Cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx
+          restore-keys: |
+            ${{ runner.os }}-buildx
