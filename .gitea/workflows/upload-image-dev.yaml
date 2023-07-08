@@ -12,7 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Cache Docker
+      - name: Restore Docker Cache
         uses: actions/cache@v3
         id: docker-cache
         with:
