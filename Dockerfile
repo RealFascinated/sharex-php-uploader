@@ -9,7 +9,7 @@ WORKDIR /tmp
 RUN wget https://nginx.org/download/nginx-1.25.2.tar.gz
 RUN tar -xzvf nginx-1.25.2.tar.gz
 WORKDIR /tmp/nginx-1.25.2
-RUN ./configure --prefix=/usr/local/nginx --sbin-path=/usr/local/sbin/nginx
+RUN ../configure --prefix=/usr/local/nginx --sbin-path=/usr/local/sbin/nginx --conf-path=/etc/nginx/nginx.conf
 RUN make
 RUN make install
 
