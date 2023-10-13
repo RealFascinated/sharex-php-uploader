@@ -1,4 +1,5 @@
-FROM alpine:3.18.4
+# Stage 1: Build Nginx
+FROM alpine:3.18.4 as builder
 
 # Install build dependencies and required tools
 RUN apk update && apk upgrade && \
@@ -15,7 +16,6 @@ RUN make install
 
 # Cleanup unnecessary files
 RUN rm -rf /tmp/*
-RUN rm -rf /var/cache/apk/*
 
 # Set up nginx
 COPY ./docker/nginx.conf /etc/nginx/nginx.conf
@@ -23,6 +23,23 @@ COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 # Setup scripts
 COPY ./upload.php /tmp/upload.php
 COPY ./docker/start.sh /start.sh
+
+# Stage 2: Create a smaller image
+FROM alpine:3.18.4
+
+# Copy Nginx and PHP-FPM binaries and configurations from the builder stage
+COPY --from=builder /usr/local/nginx /usr/local/nginx
+COPY --from=builder /etc/nginx /etc/nginx
+COPY --from=builder /etc/php81 /etc/php81
+COPY --from=builder /tmp/upload.php /tmp/upload.php
+COPY --from=builder /start.sh /start.sh
+
+# Install runtime dependencies
+RUN apk update && apk upgrade && \
+    apk add --no-cache php81 php81-fpm php81-gd
+
+# Cleanup unnecessary files
+RUN rm -rf /var/cache/apk/*
 
 # Start server
 CMD ["sh", "/start.sh"]
