@@ -3,7 +3,7 @@ FROM alpine:3.18.4 as builder
 
 # Install build dependencies and required tools
 RUN apk update && apk upgrade && \
-    apk add --no-cache php81 php81-fpm php81-gd build-base pcre-dev openssl-dev zlib-dev linux-headers
+    apk add --no-cache build-base pcre-dev openssl-dev zlib-dev linux-headers
 
 # Download and build the latest version of Nginx from source
 WORKDIR /tmp
@@ -37,7 +37,7 @@ COPY --from=builder /start.sh /start.sh
 
 # Install runtime dependencies
 RUN apk update && apk upgrade && \
-    apk add --no-cache php81 php81-fpm php81-gd
+    apk add --no-cache php81 php81-fpm php81-gd pcre
 
 # Cleanup unnecessary files
 RUN rm -rf /var/cache/apk/*
