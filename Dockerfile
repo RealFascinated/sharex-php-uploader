@@ -24,7 +24,7 @@ COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 COPY ./upload.php /tmp/upload.php
 COPY ./docker/start.sh /start.sh
 
-# Stage 2: Create a smaller image
+# Stage 2: Create a smaller production image
 FROM alpine:3.18.4
 
 # Copy Nginx and PHP-FPM binaries and configurations from the builder stage
