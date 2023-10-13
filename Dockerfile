@@ -31,7 +31,6 @@ FROM alpine:3.18.4
 COPY --from=builder /usr/local/nginx /usr/local/nginx
 COPY --from=builder /usr/local/sbin/nginx /usr/local/sbin/nginx
 COPY --from=builder /etc/nginx /etc/nginx
-COPY --from=builder /etc/php81 /etc/php81
 COPY --from=builder /tmp/upload.php /tmp/upload.php
 COPY --from=builder /start.sh /start.sh
 
