@@ -24,6 +24,9 @@ COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 COPY ./upload.php /tmp/upload.php
 COPY ./docker/start.sh /start.sh
 
+# Copy public directory
+COPY ./public /tmp/public
+
 # Stage 2: Create a smaller production image
 FROM alpine:3.18.4
 
@@ -33,6 +36,7 @@ COPY --from=builder /usr/local/sbin/nginx /usr/local/sbin/nginx
 COPY --from=builder /etc/nginx /etc/nginx
 COPY --from=builder /tmp/upload.php /tmp/upload.php
 COPY --from=builder /start.sh /start.sh
+COPY --from=builder /tmp/public /tmp/public
 
 # Install runtime dependencies
 RUN apk update && apk upgrade && \
