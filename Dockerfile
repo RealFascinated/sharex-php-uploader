@@ -23,6 +23,7 @@ COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 # Setup scripts
 COPY ./upload.php /tmp/upload.php
 COPY ./docker/start.sh /start.sh
+COPY ./docker/index.html /tmp/index.html
 
 # Copy public directory
 COPY ./public /tmp/public
@@ -35,6 +36,7 @@ COPY --from=builder /usr/local/nginx /usr/local/nginx
 COPY --from=builder /usr/local/sbin/nginx /usr/local/sbin/nginx
 COPY --from=builder /etc/nginx /etc/nginx
 COPY --from=builder /tmp/upload.php /tmp/upload.php
+COPY --from=builder /tmp/index.html /tmp/index.html
 COPY --from=builder /start.sh /start.sh
 COPY --from=builder /tmp/public /tmp/public
 

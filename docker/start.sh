@@ -14,6 +14,14 @@ else
   echo "Upload script was not found, copying it."
 fi
 
+echo "Checking if default index.html exists in /var/www/html"
+if [ -f "/var/www/html/index.html" ]; then
+  echo "Upload script was found, ignoring copy."
+else
+  cp /tmp/index.html /var/www/html
+  echo "Default index.html was not found, copying it."
+fi
+
 # Letting php know that we are running in docker
 echo "env[DOCKER] = true" >> /etc/php81/php-fpm.d/www.conf
 echo "clear_env = no" >> /etc/php81/php-fpm.d/www.conf
