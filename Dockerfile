@@ -1,5 +1,5 @@
 # Stage 1: Build Nginx
-FROM alpine:3.18.5 as builder
+FROM alpine:3.19.1 as builder
 
 # Install build dependencies and required tools
 RUN apk update && apk upgrade && \
@@ -29,7 +29,7 @@ COPY ./docker/index.html /tmp/index.html
 COPY ./public /tmp/public
 
 # Stage 2: Create a smaller production image
-FROM alpine:3.18.5
+FROM alpine:3.19.1
 
 # Copy Nginx and PHP-FPM binaries and configurations from the builder stage
 COPY --from=builder /usr/local/nginx /usr/local/nginx
