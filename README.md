@@ -1,4 +1,4 @@
-# ShareX Upload Script
+# ShareX Uploader
 
 This PHP script allows you to easily upload ShareX screenshots and videos. It includes token authentication for security and can handle various image file types by converting them to WebP format for efficient storage.
 
