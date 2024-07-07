@@ -44,7 +44,7 @@ COPY --from=builder /tmp/public /tmp/public
 
 # Install runtime dependencies
 RUN apk update && apk upgrade && \
-    apk add --no-cache php81 php83-fpm php83-gd pcre
+    apk add --no-cache php83 php83-fpm php83-gd pcre
 
 # Cleanup unnecessary files
 RUN rm -rf /var/cache/apk/*
