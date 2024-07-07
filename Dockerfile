@@ -1,5 +1,5 @@
 # Stage 1: Build Nginx
-FROM alpine:3.19.1 as builder
+FROM alpine:3.20.1 as builder
 
 # Install build dependencies and required tools
 RUN apk update && apk upgrade && \
@@ -31,7 +31,7 @@ COPY ./docker/index.html /tmp/index.html
 COPY ./public /tmp/public
 
 # Stage 2: Create a smaller production image
-FROM alpine:3.19.1
+FROM alpine:3.20.1
 
 # Copy Nginx and PHP-FPM binaries and configurations from the builder stage
 COPY --from=builder /usr/local/nginx /usr/local/nginx
@@ -44,7 +44,7 @@ COPY --from=builder /tmp/public /tmp/public
 
 # Install runtime dependencies
 RUN apk update && apk upgrade && \
-    apk add --no-cache php81 php81-fpm php81-gd pcre
+    apk add --no-cache php81 php83-fpm php83-gd pcre
 
 # Cleanup unnecessary files
 RUN rm -rf /var/cache/apk/*
