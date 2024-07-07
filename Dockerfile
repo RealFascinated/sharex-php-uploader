@@ -1,5 +1,5 @@
 # Stage 1: Build Nginx
-FROM alpine:3.19.1 as builder
+FROM alpine:3.20.1 as builder
 
 # Install build dependencies and required tools
 RUN apk update && apk upgrade && \
@@ -7,9 +7,9 @@ RUN apk update && apk upgrade && \
 
 # Download and build the latest version of Nginx from source
 WORKDIR /tmp
-RUN wget https://nginx.org/download/nginx-1.25.3.tar.gz && \
-    tar -xzvf nginx-1.25.3.tar.gz && \
-    cd nginx-1.25.3 && \
+RUN wget https://nginx.org/download/nginx-1.27.0.tar.gz && \
+    tar -xzvf nginx-1.27.0.tar.gz && \
+    cd nginx-1.27.0 && \
     ./configure --prefix=/usr/local/nginx --sbin-path=/usr/local/sbin/nginx --conf-path=/etc/nginx/nginx.conf && \
     make > /dev/null 2>&1 && \
     make install > /dev/null 2>&1 && \
@@ -31,7 +31,7 @@ COPY ./docker/index.html /tmp/index.html
 COPY ./public /tmp/public
 
 # Stage 2: Create a smaller production image
-FROM alpine:3.19.1
+FROM alpine:3.20.1
 
 # Copy Nginx and PHP-FPM binaries and configurations from the builder stage
 COPY --from=builder /usr/local/nginx /usr/local/nginx
