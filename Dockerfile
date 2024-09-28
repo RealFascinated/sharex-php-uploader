@@ -3,7 +3,7 @@ ARG NGINX_VERSION=1.27.1
 ARG PHP_VERSION=8.3
 
 # Stage 1: Build Nginx
-FROM alpine:3.20.3 as builder
+FROM alpine:3.20.3 AS builder
 
 # Install build dependencies and required tools
 RUN apk update && apk upgrade && \
