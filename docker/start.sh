@@ -51,6 +51,9 @@ function start_services() {
   php-fpm83 --nodaemonize &
   PHP_FPM_PID=$!
 
+  # Fix permissions
+  chmod 777 /run/php/php.sock
+
   nginx -g 'daemon off;' &
   NGINX_PID=$!
 
