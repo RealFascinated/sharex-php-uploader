@@ -3,7 +3,6 @@ FROM alpine:3.20.3 AS builder
 
 # Variables
 ARG NGINX_VERSION="1.27.1"
-ARG PHP_VERSION="8.3"
 
 # Install build dependencies and required tools
 RUN apk update && apk upgrade && \
@@ -48,7 +47,7 @@ COPY --from=builder /tmp/public /tmp/public
 
 # Install runtime dependencies
 RUN apk update && apk upgrade && \
-    apk add --no-cache php81 php81-fpm php81-gd pcre
+    apk add --no-cache php83 php83-fpm php83-gd pcre
 
 # Cleanup unnecessary files
 RUN rm -rf /var/cache/apk/*
