@@ -23,15 +23,15 @@ else
 fi
 
 # Letting php know that we are running in docker
-echo "env[DOCKER] = true" >> /etc/php81/php-fpm.d/www.conf
-echo "clear_env = no" >> /etc/php81/php-fpm.d/www.conf
+echo "env[DOCKER] = true" >> /etc/php83/php-fpm.d/www.conf
+echo "clear_env = no" >> /etc/php83/php-fpm.d/www.conf
 
 # Create the directory for PHP socket
 mkdir -p /run/php
 
 # Set php-fpm to listen on socket
 touch /run/php/php.sock
-sed -i 's/^listen = .*/listen = \/run\/php\/php.sock/' /etc/php81/php-fpm.d/www.conf
+sed -i 's/^listen = .*/listen = \/run\/php\/php.sock/' /etc/php83/php-fpm.d/www.conf
 
 echo "Setting permissions for upload script"
 chmod 777 /var/www/html/upload.php
@@ -39,8 +39,8 @@ chmod 777 /var/www/html/upload.php
 echo "Setting max upload size to ${MAX_UPLOAD_SIZE}"
 
 # Set max upload size for php
-sed -i "s/^upload_max_filesize = .*/upload_max_filesize = ${MAX_UPLOAD_SIZE}/" /etc/php81/php.ini
-sed -i "s/^post_max_size = .*/post_max_size = ${MAX_UPLOAD_SIZE}/" /etc/php81/php.ini
+sed -i "s/^upload_max_filesize = .*/upload_max_filesize = ${MAX_UPLOAD_SIZE}/" /etc/php83/php.ini
+sed -i "s/^post_max_size = .*/post_max_size = ${MAX_UPLOAD_SIZE}/" /etc/php83/php.ini
 
 # Set max upload size for nginx
 sed -i "s/client_max_body_size 500M;/client_max_body_size ${MAX_UPLOAD_SIZE};/" /etc/nginx/nginx.conf
