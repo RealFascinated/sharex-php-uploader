@@ -1,3 +1,7 @@
+# Variables
+ARG NGINX_VERSION=1.27.1
+ARG PHP_VERSION=8.3
+
 # Stage 1: Build Nginx
 FROM alpine:3.20.3 as builder
 
@@ -5,11 +9,11 @@ FROM alpine:3.20.3 as builder
 RUN apk update && apk upgrade && \
     apk add --no-cache build-base pcre-dev openssl-dev zlib-dev linux-headers
 
-# Download and build the latest version of Nginx from source
+# Download and build Nginx from source
 WORKDIR /tmp
-RUN wget https://nginx.org/download/nginx-1.27.0.tar.gz && \
-    tar -xzvf nginx-1.27.0.tar.gz && \
-    cd nginx-1.27.0 && \
+RUN wget https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
+    tar -xzvf nginx-${NGINX_VERSION}.tar.gz && \
+    cd nginx-${NGINX_VERSION} && \
     ./configure --prefix=/usr/local/nginx --sbin-path=/usr/local/sbin/nginx --conf-path=/etc/nginx/nginx.conf && \
     make > /dev/null 2>&1 && \
     make install > /dev/null 2>&1 && \
@@ -44,10 +48,13 @@ COPY --from=builder /tmp/public /tmp/public
 
 # Install runtime dependencies
 RUN apk update && apk upgrade && \
-    apk add --no-cache php83 php83-fpm php83-gd pcre
+    apk add --no-cache php${PHP_VERSION} php${PHP_VERSION}-fpm php${PHP_VERSION}-gd pcre
 
 # Cleanup unnecessary files
 RUN rm -rf /var/cache/apk/*
+
+# Ensure signals are passed through
+STOPSIGNAL SIGTERM
 
 # Start server
 CMD ["sh", "/start.sh"]
