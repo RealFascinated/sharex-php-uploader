@@ -47,13 +47,11 @@ sed -i "s/client_max_body_size 500M;/client_max_body_size ${MAX_UPLOAD_SIZE};/" 
 
 # Function to handle signal forwarding and service startup
 function start_services() {
-  echo "Starting PHP-FPM and Nginx..."
-  php-fpm83 --nodaemonize &
+  echo "Starting PHP-FPM..."
+  php-fpm83 --nodaemonize && chmod 777 /run/php/php.sock &
   PHP_FPM_PID=$!
 
-  # Fix permissions
-  chmod 777 /run/php/php.sock
-
+  echo "Starting Nginx..."
   nginx -g 'daemon off;' &
   NGINX_PID=$!
 
