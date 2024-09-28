@@ -45,15 +45,24 @@ sed -i "s/^post_max_size = .*/post_max_size = ${MAX_UPLOAD_SIZE}/" /etc/php83/ph
 # Set max upload size for nginx
 sed -i "s/client_max_body_size 500M;/client_max_body_size ${MAX_UPLOAD_SIZE};/" /etc/nginx/nginx.conf
 
-function start() {
-  echo "Starting PHP & Nginx"
-  php-fpm83 &&
-  chmod 777 /run/php/php.sock &&
-  /usr/local/sbin/nginx -g 'daemon off;'
+# Function to handle signal forwarding and service startup
+function start_services() {
+  echo "Starting PHP-FPM and Nginx..."
+  php-fpm83 --nodaemonize &
+  PHP_FPM_PID=$!
+
+  nginx -g 'daemon off;' &
+  NGINX_PID=$!
+
+  # Wait for both processes to finish
+  wait $PHP_FPM_PID $NGINX_PID
 }
 
-# Start Nginx and retry if it fails
-until start; do
-  echo "Nginx failed to start, retrying in 5 seconds..."
+# Trap SIGTERM and SIGINT and forward to PHP-FPM and Nginx
+trap "echo 'Stopping services...'; kill -TERM $PHP_FPM_PID $NGINX_PID" SIGTERM SIGINT
+
+# Start the services and retry if Nginx fails
+until start_services; do
+  echo "Nginx or PHP-FPM failed to start, retrying in 5 seconds..."
   sleep 5
 done
