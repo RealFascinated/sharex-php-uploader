@@ -1,9 +1,13 @@
+# Stage 1: Build Nginx
+FROM alpine:3.20.3 AS builder
+
 # Variables
 ARG NGINX_VERSION="1.27.1"
 ARG PHP_VERSION="8.3"
 
-# Stage 1: Build Nginx
-FROM alpine:3.20.3 AS builder
+# Print versions
+RUN echo "NGINX_VERSION=${NGINX_VERSION}"
+RUN echo "PHP_VERSION=${PHP_VERSION}"
 
 # Install build dependencies and required tools
 RUN apk update && apk upgrade && \
