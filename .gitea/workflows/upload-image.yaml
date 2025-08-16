@@ -20,7 +20,7 @@ jobs:
         uses: tj-actions/branch-names@v8
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Restore Docker Cache
         uses: actions/cache@v4
