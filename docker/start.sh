@@ -35,7 +35,7 @@ sed -i "s/^upload_max_filesize = .*/upload_max_filesize = ${MAX_UPLOAD_SIZE}/" /
 sed -i "s/^post_max_size = .*/post_max_size = ${MAX_UPLOAD_SIZE}/" /etc/php83/php.ini
 
 # Set max upload size for nginx
-sed -i "s/client_max_body_size 500M;/client_max_body_size ${MAX_UPLOAD_SIZE};/" /etc/nginx/nginx.conf
+sed -i "s/\${MAX_UPLOAD_SIZE}/${MAX_UPLOAD_SIZE}/" /etc/nginx/nginx.conf
 
 function start() {
   echo "Starting PHP & Nginx"
