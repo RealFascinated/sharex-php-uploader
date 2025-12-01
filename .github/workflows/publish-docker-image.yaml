@@ -33,9 +33,9 @@ jobs:
         id: tags
         run: |
           BRANCH="${{ steps.branch-name.outputs.current_branch }}"
-          TAGS="fascinated/sharex-php-uploader:${BRANCH}"
+          TAGS="realfascinated/sharex-php-uploader:${BRANCH}"
           if [ "$BRANCH" = "master" ]; then
-            TAGS="${TAGS},fascinated/sharex-php-uploader:latest"
+            TAGS="${TAGS},realfascinated/sharex-php-uploader:latest"
           fi
           echo "tags=${TAGS}" >> $GITHUB_OUTPUT
 
