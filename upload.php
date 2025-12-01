@@ -59,18 +59,10 @@ function generateRandomString($length = 10): string
 /**
  * Return a JSON response
  */
-function returnJson($data): void
+function respondJson($data): void
 {
   echo (json_encode($data));
   die();
-}
-
-/**
- * Log to nginx
- */
-function logToNginx($message): void
-{
-  error_log($message);
 }
 
 try {
@@ -79,7 +71,7 @@ try {
 
   // Page to show if someone visits the upload script
   if ($secret == null && $file == null) {
-    returnJson(array(
+    respondJson(array(
       'status' => 'OK',
       'url' => 'Welcome to the ShareX PHP Uploader! v' . $SCRIPT_VERSION,
       // Remove this if you don't want to show the support URL
@@ -90,75 +82,68 @@ try {
 
   // Check if the token is valid
   if (!checkSecret($secret)) {
-    returnJson(array(
+    respondJson(array(
       'status' => 'ERROR',
       'url' => 'Invalid or missing upload secret'
     ));
-    logToNginx("An upload was attempted with an invalid secret key: " . $secret);
     die();
   }
 
   // Check if the secret is the default one, and if so, tell the user to change it
   if ($secret == $defaultSecretKey) {
-    returnJson(array(
+    respondJson(array(
       'status' => 'ERROR',
       'url' => 'You need to set your upload secret in the configuration section of the upload.php file'
     ));
-    logToNginx("An upload was attempted with the default secret key");
     die();
   }
 
   // Check if the file was uploaded
   if (!isset($file)) {
-    returnJson(array(
+    respondJson(array(
       'status' => 'ERROR',
       'url' => 'No file was uploaded'
     ));
-    logToNginx("An upload was attempted without providing a file");
     die();
   }
 
-  $originalFileName = preg_replace("/[^A-Za-z0-9_.]/", '', $_FILES["sharex"]["name"]); // Remove unwanted characters
+  $originalFileName = preg_replace("/[^A-Za-z0-9_.]/", '', $_FILES["sharex"]["name"]); // Remove unwanted characters (e.g. spaces, special characters, etc.)
   $fileType = pathinfo($originalFileName, PATHINFO_EXTENSION); // File extension (e.g. png, jpg, etc.)
   $fileSize = $_FILES["sharex"]["size"]; // File size in bytes
-
-  // Check if the file already exists
-  if (file_exists($uploadDir . $originalFileName)) {
-    returnJson(array(
-      'status' => 'ERROR',
-      'url' => 'File already exists'
-    ));
-    logToNginx("An upload was attempted with a file that already exists: " . $originalFileName);
-    die();
-  }
 
   $fileName = $originalFileName; // The final name of the file
   if ($useRandomFileNames) { // Generate a random file name if enabled
     $fileName = generateRandomString($fileNameLength) . "." . $fileType;
   }
 
-  // Move the file to the uploads folder
-  $success = move_uploaded_file($_FILES["sharex"]["tmp_name"], $uploadDir . $fileName);
-  if (!$success) {
-    returnJson(array(
+  // Check if the file already exists
+  if (file_exists($uploadDir . $fileName)) {
+    respondJson(array(
       'status' => 'ERROR',
-      'url' => 'Failed to save file. Check the permissions of the upload directory.'
+      'url' => 'File already exists'
     ));
-    logToNginx("An upload was attempted but the file could not be saved: " . $fileName);
     die();
   }
 
-  returnJson(array(
+  // Move the file to the uploads folder
+  $success = move_uploaded_file($_FILES["sharex"]["tmp_name"], $uploadDir . $fileName);
+  if (!$success) {
+    respondJson(array(
+      'status' => 'ERROR',
+      'url' => 'Failed to save file. Check the permissions of the upload directory.'
+    ));
+    die();
+  }
+
+  respondJson(array(
     'status' => 'OK',
     'url' => $fileName
   ));
-  logToNginx("An upload was successful. original id: $originalFileName, final id: $fileName, size: $fileSize");
   die();
 } catch (Exception $e) { // Handle any errors
-  returnJson(array(
+  respondJson(array(
     'status' => 'ERROR',
     'url' => $e->getMessage()
   ));
-  logToNginx("An upload was attempted but an error occurred: " . $e->getMessage());
   die();
 }
