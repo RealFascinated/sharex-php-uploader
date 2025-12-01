@@ -13,13 +13,10 @@ services:
     environment:
       - TZ=America/Los_Angeles # Your timezone
       - MAX_UPLOAD_SIZE=500M # The max upload size of files in megabytes. Eg: 500M
-      - UPLOAD_SECRETS=set me # You can add multiple secrets. Format: secret1,secret2,secret3
+      - UPLOAD_SECRETS=set_me # You can add multiple secrets. Format: secret1,secret2,secret3
       - UPLOAD_DIR=./ # The directory to store the uploaded files
       - USE_RANDOM_FILE_NAMES=true # If true, the uploaded files will be renamed to a random string
       - FILE_NAME_LENGTH=8 # The length of the random file name
-      - SHOULD_CONVERT_TO_WEBP=true # If true, the uploaded files will be converted to webp
-      - WEBP_QUALITY=95 # The quality of the converted webp files (0-100 -)
-      - WEBP_THREADHOLD=1048576 # The minimum file size to convert to webp (1MB in bytes)
     ports:
       - "80:80/tcp"
     volumes:

@@ -3,8 +3,7 @@
 /**
  * DO NOT TOUCH!!!!!!!!
  */
-$SCRIPT_VERSION = "0.1.0"; // The version of the script
-$before = microtime(true); // Start time of the script
+$SCRIPT_VERSION = "0.2.0"; // The version of the script
 $defaultSecretKey = "set me"; // The default secret key
 header('Content-type:application/json;charset=utf-8'); // Set the response content type to JSON
 
@@ -64,15 +63,6 @@ function generateRandomString($length = 10): string
 }
 
 /**
- * Get the time taken to execute the script
- */
-function getTimeTaken()
-{
-  global $before;
-  return round(microtime(true) - $before, 3) . "ms";
-}
-
-/**
  * Return a JSON response
  */
 function returnJson($data): void
@@ -100,7 +90,7 @@ try {
       'url' => 'Welcome to the ShareX PHP Uploader! v' . $SCRIPT_VERSION,
       // Remove this if you don't want to show the support URL
       'support' => "For support, visit - https://git.fascinated.cc/Fascinated/sharex-php-uploader",
-      'timeTaken' => getTimeTaken()
+      'version' => $SCRIPT_VERSION
     ));
     die();
   }
@@ -109,8 +99,7 @@ try {
   if (!checkSecret($secret)) {
     returnJson(array(
       'status' => 'ERROR',
-      'url' => 'Invalid or missing upload secret',
-      'timeTaken' => getTimeTaken()
+      'url' => 'Invalid or missing upload secret'
     ));
     logToNginx("An upload was attempted with an invalid secret key: " . $secret);
     die();
@@ -120,8 +109,7 @@ try {
   if ($secret == $defaultSecretKey) {
     returnJson(array(
       'status' => 'ERROR',
-      'url' => 'You need to set your upload secret in the configuration section of the upload.php file',
-      'timeTaken' => getTimeTaken()
+      'url' => 'You need to set your upload secret in the configuration section of the upload.php file'
     ));
     logToNginx("An upload was attempted with the default secret key");
     die();
@@ -131,8 +119,7 @@ try {
   if (!isset($file)) {
     returnJson(array(
       'status' => 'ERROR',
-      'url' => 'No file was uploaded',
-      'timeTaken' => getTimeTaken()
+      'url' => 'No file was uploaded'
     ));
     logToNginx("An upload was attempted without providing a file");
     die();
@@ -146,8 +133,7 @@ try {
   if (file_exists($uploadDir . $originalFileName)) {
     returnJson(array(
       'status' => 'ERROR',
-      'url' => 'File already exists',
-      'timeTaken' => getTimeTaken()
+      'url' => 'File already exists'
     ));
     logToNginx("An upload was attempted with a file that already exists: " . $originalFileName);
     die();
@@ -158,44 +144,27 @@ try {
     $finalName = generateRandomString($fileNameLength) . "." . $fileType;
   }
 
-  $needsToBeSaved = true; // Whether the file needs to be saved
-
-  // Check the file type and size
-  if ($shouldConvertToWebp && in_array($fileType, ["png", "jpeg", "jpg"]) && $_FILES["sharex"]["size"] > $webpThreadhold) {
-    $image = imagecreatefromstring(file_get_contents($_FILES["sharex"]["tmp_name"]));
-    $webp_file = pathinfo($finalName, PATHINFO_FILENAME) . ".webp";
-    imagewebp($image, $webp_file, 90); // Convert the image and save it
-    imagedestroy($image); // Free up memory
-    $finalName = $webp_file;
-    $shouldSave = false;
-    $fileSize = filesize($webp_file); // Update the file size
+  // Move the file to the uploads folder
+  $success = move_uploaded_file($_FILES["sharex"]["tmp_name"], $uploadDir . $finalName);
+  if (!$success) {
+    returnJson(array(
+      'status' => 'ERROR',
+      'url' => 'Failed to save file. Check the permissions of the upload directory.'
+    ));
+    logToNginx("An upload was attempted but the file could not be saved: " . $finalName);
+    die();
   }
 
-  if ($needsToBeSaved) { // Save the file if it has not been saved yet
-    // Move the file to the uploads folder
-    $success = move_uploaded_file($_FILES["sharex"]["tmp_name"], $uploadDir . $finalName);
-    if (!$success) {
-      returnJson(array(
-        'status' => 'ERROR',
-        'url' => 'Failed to save file. Check the permissions of the upload directory.',
-        'timeTaken' => getTimeTaken()
-      ));
-      logToNginx("An upload was attempted but the file could not be saved: " . $finalName);
-      die();
-    }
-  }
   returnJson(array(
     'status' => 'OK',
-    'url' => $finalName,
-    'timeTaken' => getTimeTaken()
+    'url' => $finalName
   ));
   logToNginx("An upload was successful. original id: $originalFileName, final id: $finalName, size: $fileSize");
   die();
 } catch (Exception $e) { // Handle any errors
   returnJson(array(
     'status' => 'ERROR',
-    'url' => $e->getMessage(),
-    'timeTaken' => getTimeTaken()
+    'url' => $e->getMessage()
   ));
   logToNginx("An upload was attempted but an error occurred: " . $e->getMessage());
   die();
