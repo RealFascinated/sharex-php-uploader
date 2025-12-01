@@ -70,7 +70,7 @@ function returnJson($data): void
  */
 function logToNginx($message): void
 {
-  error_log($message);
+  file_put_contents('php://stderr', $message . PHP_EOL);
 }
 
 try {

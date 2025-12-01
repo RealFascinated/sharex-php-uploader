@@ -26,6 +26,10 @@ fi
 echo "env[DOCKER] = true" >> /etc/php83/php-fpm.d/www.conf
 echo "clear_env = no" >> /etc/php83/php-fpm.d/www.conf
 
+# Configure PHP-FPM to log to stderr so nginx can capture it
+echo "php_admin_value[error_log] = /dev/stderr" >> /etc/php83/php-fpm.d/www.conf
+echo "php_admin_flag[log_errors] = on" >> /etc/php83/php-fpm.d/www.conf
+
 # Create the directory for PHP socket
 mkdir -p /run/php
 
