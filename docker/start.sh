@@ -6,30 +6,17 @@ if [ -z "$MAX_UPLOAD_SIZE" ]; then
   echo "MAX_UPLOAD_SIZE was not set, using default value of ${MAX_UPLOAD_SIZE}"
 fi
 
-echo "Checking if upload script exists in /var/www/html"
-if [ -f "/var/www/html/upload.php" ]; then
-  echo "Upload script was found, ignoring copy."
-else
-  cp /tmp/upload.php /var/www/html
-  echo "Upload script was not found, copying it."
-fi
-
-echo "Checking if default index.html exists in /var/www/html"
-if [ -f "/var/www/html/index.html" ]; then
-  echo "Upload script was found, ignoring copy."
-else
-  cp /tmp/index.html /var/www/html
-  echo "Default index.html was not found, copying it."
-fi
+for file in upload.php index.html; do
+  echo "Checking if ${file} exists in /var/www/html"
+  if [ ! -f "/var/www/html/${file}" ]; then
+    cp "/tmp/${file}" /var/www/html
+    echo "${file} was not found, copying it."
+  fi
+done
 
 # Letting php know that we are running in docker
 echo "env[DOCKER] = true" >> /etc/php83/php-fpm.d/www.conf
 echo "clear_env = no" >> /etc/php83/php-fpm.d/www.conf
-
-# Configure PHP-FPM to log to stderr (captured by docker/nginx)
-sed -i 's/^;catch_workers_output = .*/catch_workers_output = yes/' /etc/php83/php-fpm.d/www.conf
-echo "php_admin_value[error_log] = /dev/stderr" >> /etc/php83/php-fpm.d/www.conf
-echo "php_admin_flag[log_errors] = on" >> /etc/php83/php-fpm.d/www.conf
 
 # Create the directory for PHP socket
 mkdir -p /run/php
