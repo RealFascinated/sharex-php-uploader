@@ -40,9 +40,10 @@ jobs:
         id: tags
         run: |
           BRANCH="${{ steps.branch-name.outputs.current_branch }}"
-          TAGS="ghcr.io/${{ github.repository_owner }}/sharex-php-uploader:${BRANCH}"
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          TAGS="ghcr.io/${OWNER}/sharex-php-uploader:${BRANCH}"
           if [ "$BRANCH" = "master" ]; then
-            TAGS="${TAGS},ghcr.io/${{ github.repository_owner }}/sharex-php-uploader:latest"
+            TAGS="${TAGS},ghcr.io/${OWNER}/sharex-php-uploader:latest"
           fi
           echo "tags=${TAGS}" >> $GITHUB_OUTPUT
 
