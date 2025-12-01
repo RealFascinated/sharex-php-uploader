@@ -4,7 +4,7 @@
  * DO NOT TOUCH!!!!!!!!
  */
 $SCRIPT_VERSION = "0.2.0"; // The version of the script
-$defaultSecretKey = "set_me"; // The default secret key
+$defaultUploadKey = "set_me"; // The default uploadKey key
 header('Content-type:application/json;charset=utf-8'); // Set the response content type to JSON
 
 /**
@@ -12,7 +12,7 @@ header('Content-type:application/json;charset=utf-8'); // Set the response conte
  */
 
 if (getenv('DOCKER')) { // If the script is running in a Docker container
-  $uploadSecrets = explode(",", getenv('UPLOAD_SECRETS')); // The upload secrets
+  $uploaduploadKeys = explode(",", getenv('UPLOAD_uploadKeyS')); // The upload uploadKeys
   $uploadDir = getenv('UPLOAD_DIR'); // The upload directory
   $useRandomFileNames = getenv('USE_RANDOM_FILE_NAMES'); // Use random file names instead of the original file name
   $fileNameLength = getenv('FILE_NAME_LENGTH'); // The length of the random file name
@@ -22,19 +22,10 @@ if (getenv('DOCKER')) { // If the script is running in a Docker container
    * USE THIS IF YOU ARE NOT USING DOCKER
    * !!!
    */
-  $uploadSecrets = array("set_me"); // The upload secrets
+  $uploaduploadKeys = array("set_me"); // The upload uploadKeys
   $uploadDir = "./"; // The upload directory
   $useRandomFileNames = false; // Use random file names instead of the original file name
   $fileNameLength = 8; // The length of the random file name
-}
-
-/**
- * Check if the given secret is valid
- */
-function checkSecret($secret): bool
-{
-  global $uploadSecrets;
-  return isset($secret) && in_array($secret, $uploadSecrets);
 }
 
 /**
@@ -66,34 +57,33 @@ function respondJson($data): void
 }
 
 try {
-  $secret = isset($_POST['secret']) ? $_POST['secret'] : null; // The secret key
+  $uploadKey = isset($_POST['uploadKey']) ? $_POST['uploadKey'] : null; // The uploadKey key
   $file = isset($_FILES['sharex']) ? $_FILES['sharex'] : null; // The uploaded file
 
   // Page to show if someone visits the upload script
-  if ($secret == null && $file == null) {
+  if ($uploadKey == null && $file == null) {
     respondJson(array(
       'status' => 'OK',
       'url' => 'Welcome to the ShareX PHP Uploader! v' . $SCRIPT_VERSION,
-      // Remove this if you don't want to show the support URL
       'support' => "For support, visit - https://github.com/RealFascinated/sharex-php-uploader"
     ));
     die();
   }
 
-  // Check if the token is valid
-  if (!checkSecret($secret)) {
+  // Check if the upload key is valid
+  if (!isset($uploadKey) && in_array($uploadKey, $uploaduploadKeys)) {
     respondJson(array(
       'status' => 'ERROR',
-      'url' => 'Invalid or missing upload secret'
+      'url' => 'Invalid or missing upload uploadKey'
     ));
     die();
   }
 
-  // Check if the secret is the default one, and if so, tell the user to change it
-  if ($secret == $defaultSecretKey) {
+  // Check if the upload key is the default one, and if so, tell the user to change it
+  if ($uploadKey == $defaultUploadKey) {
     respondJson(array(
       'status' => 'ERROR',
-      'url' => 'You need to set your upload secret in the configuration section of the upload.php file'
+      'url' => 'You need to set your upload key in the configuration section of the upload.php file'
     ));
     die();
   }
@@ -120,7 +110,7 @@ try {
   if (file_exists($uploadDir . $fileName)) {
     respondJson(array(
       'status' => 'ERROR',
-      'url' => 'File already exists'
+      'url' => 'The file ' . $fileName . ' already exists'
     ));
     die();
   }
