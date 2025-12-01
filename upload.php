@@ -4,7 +4,7 @@
  * DO NOT TOUCH!!!!!!!!
  */
 $SCRIPT_VERSION = "0.2.0"; // The version of the script
-$defaultSecretKey = "set me"; // The default secret key
+$defaultSecretKey = "set_me"; // The default secret key
 header('Content-type:application/json;charset=utf-8'); // Set the response content type to JSON
 
 /**
@@ -22,7 +22,7 @@ if (getenv('DOCKER')) { // If the script is running in a Docker container
    * USE THIS IF YOU ARE NOT USING DOCKER
    * !!!
    */
-  $uploadSecrets = array("set me"); // The upload secrets
+  $uploadSecrets = array("set_me"); // The upload secrets
   $uploadDir = "./"; // The upload directory
   $useRandomFileNames = false; // Use random file names instead of the original file name
   $fileNameLength = 8; // The length of the random file name
@@ -83,8 +83,7 @@ try {
       'status' => 'OK',
       'url' => 'Welcome to the ShareX PHP Uploader! v' . $SCRIPT_VERSION,
       // Remove this if you don't want to show the support URL
-      'support' => "For support, visit - https://github.com/RealFascinated/sharex-php-uploader",
-      'version' => $SCRIPT_VERSION
+      'support' => "For support, visit - https://github.com/RealFascinated/sharex-php-uploader"
     ));
     die();
   }
