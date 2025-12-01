@@ -49,7 +49,7 @@ function start() {
   echo "Starting PHP & Nginx"
   php-fpm83 &&
   chmod 777 /run/php/php.sock &&
-  /usr/local/sbin/nginx -g 'daemon off;'
+  nginx -g 'daemon off;'
 }
 
 # Start Nginx and retry if it fails
