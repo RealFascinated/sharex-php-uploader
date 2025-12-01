@@ -132,27 +132,27 @@ try {
     die();
   }
 
-  $finalName = $originalFileName; // The final name of the file
+  $fileName = $originalFileName; // The final name of the file
   if ($useRandomFileNames) { // Generate a random file name if enabled
-    $finalName = generateRandomString($fileNameLength) . "." . $fileType;
+    $fileName = generateRandomString($fileNameLength) . "." . $fileType;
   }
 
   // Move the file to the uploads folder
-  $success = move_uploaded_file($_FILES["sharex"]["tmp_name"], $uploadDir . $finalName);
+  $success = move_uploaded_file($_FILES["sharex"]["tmp_name"], $uploadDir . $fileName);
   if (!$success) {
     returnJson(array(
       'status' => 'ERROR',
       'url' => 'Failed to save file. Check the permissions of the upload directory.'
     ));
-    logToNginx("An upload was attempted but the file could not be saved: " . $finalName);
+    logToNginx("An upload was attempted but the file could not be saved: " . $fileName);
     die();
   }
 
   returnJson(array(
     'status' => 'OK',
-    'url' => $finalName
+    'url' => $fileName
   ));
-  logToNginx("An upload was successful. original id: $originalFileName, final id: $finalName, size: $fileSize");
+  logToNginx("An upload was successful. original id: $originalFileName, final id: $fileName, size: $fileSize");
   die();
 } catch (Exception $e) { // Handle any errors
   returnJson(array(
