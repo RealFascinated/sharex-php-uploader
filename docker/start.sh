@@ -26,7 +26,8 @@ fi
 echo "env[DOCKER] = true" >> /etc/php83/php-fpm.d/www.conf
 echo "clear_env = no" >> /etc/php83/php-fpm.d/www.conf
 
-# Configure PHP-FPM to log to stderr so nginx can capture it
+# Configure PHP-FPM to log to stderr (captured by docker/nginx)
+sed -i 's/^;catch_workers_output = .*/catch_workers_output = yes/' /etc/php83/php-fpm.d/www.conf
 echo "php_admin_value[error_log] = /dev/stderr" >> /etc/php83/php-fpm.d/www.conf
 echo "php_admin_flag[log_errors] = on" >> /etc/php83/php-fpm.d/www.conf
 
