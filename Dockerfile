@@ -27,9 +27,6 @@ COPY ./upload.php /tmp/upload.php
 COPY ./docker/start.sh /start.sh
 COPY ./docker/index.html /tmp/index.html
 
-# Copy public directory
-COPY ./public /tmp/public
-
 # Stage 2: Create a smaller production image
 FROM alpine:3.20.3
 
@@ -40,7 +37,6 @@ COPY --from=builder /etc/nginx /etc/nginx
 COPY --from=builder /tmp/upload.php /tmp/upload.php
 COPY --from=builder /tmp/index.html /tmp/index.html
 COPY --from=builder /start.sh /start.sh
-COPY --from=builder /tmp/public /tmp/public
 
 # Install runtime dependencies
 RUN apk update && apk upgrade && \
