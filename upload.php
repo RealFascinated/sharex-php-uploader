@@ -89,7 +89,7 @@ try {
       'status' => 'OK',
       'url' => 'Welcome to the ShareX PHP Uploader! v' . $SCRIPT_VERSION,
       // Remove this if you don't want to show the support URL
-      'support' => "For support, visit - https://git.fascinated.cc/Fascinated/sharex-php-uploader",
+      'support' => "For support, visit - https://github.com/RealFascinated/sharex-php-uploader",
       'version' => $SCRIPT_VERSION
     ));
     die();

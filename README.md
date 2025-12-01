@@ -1,11 +1,6 @@
 # ShareX Uploader
 
-This PHP script allows you to easily upload ShareX screenshots and videos. It includes token authentication for security and can handle various image file types by converting them to WebP format for efficient storage.
-
-## Features
-
-- Effortlessly upload screenshots to your website using ShareX.
-- Automatically convert screenshots to WebP format.
+Easily upload screenshots and files to a simple CDN using ShareX.
 
 ## Requirements
 
@@ -40,14 +35,10 @@ This installation method is not recommended as I cannot provide instructions for
 ## Post Installation
 
 1. Open ShareX and go to Destinations > Custom Uploader Settings.
-2. Click on Import > From URL and enter `https://git.fascinated.cc/Fascinated/sharex-php-uploader/raw/branch/master/sharex.sxcu`.
+2. Click on Import > From URL and enter `https://github.com/RealFascinated/sharex-php-uploader/raw/branch/master/sharex.sxcu`.
 3. Edit the URL to your website's URL.
 4. Click on Test after you've edited the URL and it should return a URL. If it doesn't, check your settings or contact me.
 
 ## Need Help?
 
 If you require assistance, feel free to contact me via Discord at `fascinated7`.
-
-## Other Information
-
-This project is maintained on my Gitea instance: <https://git.fascinated.cc/Fascinated/sharex-php-uploader>

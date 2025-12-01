@@ -5,7 +5,7 @@ services:
     container_name: ShareX-Uploader
     image: fascinated/sharex-php-uploader:latest
     # Uncomment the following line to build the image yourself
-    # build: https://git.fascinated.cc/Fascinated/sharex-php-uploader.git
+    # build: https://github.com/RealFascinated/sharex-php-uploader.git
     # or build it locally (you need to clone the repo first):
     # build:
     #   context: .
