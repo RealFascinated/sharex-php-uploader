@@ -3,16 +3,15 @@
 /**
  * DO NOT TOUCH!!!!!!!!
  */
-$SCRIPT_VERSION = "0.2.0"; // The version of the script
-$defaultUploadKey = "set_me"; // The default uploadKey key
+$SCRIPT_VERSION = "1.0.0"; // The version of the script
+$defaultUploadKey = "set_me"; // The default upload key
 header('Content-type:application/json;charset=utf-8'); // Set the response content type to JSON
 
 /**
  * Configuration
  */
-
 if (getenv('DOCKER')) { // If the script is running in a Docker container
-  $uploaduploadKeys = explode(",", getenv('UPLOAD_uploadKeyS')); // The upload uploadKeys
+  $uploadKeys = explode(",", getenv('UPLOAD_SECRETS')); // The upload keys
   $uploadDir = getenv('UPLOAD_DIR'); // The upload directory
   $useRandomFileNames = getenv('USE_RANDOM_FILE_NAMES'); // Use random file names instead of the original file name
   $fileNameLength = getenv('FILE_NAME_LENGTH'); // The length of the random file name
@@ -22,7 +21,7 @@ if (getenv('DOCKER')) { // If the script is running in a Docker container
    * USE THIS IF YOU ARE NOT USING DOCKER
    * !!!
    */
-  $uploaduploadKeys = array("set_me"); // The upload uploadKeys
+  $uploadKeys = array("set_me"); // The upload keys
   $uploadDir = "./"; // The upload directory
   $useRandomFileNames = false; // Use random file names instead of the original file name
   $fileNameLength = 8; // The length of the random file name
@@ -31,33 +30,71 @@ if (getenv('DOCKER')) { // If the script is running in a Docker container
 /**
  * Generate a random string
  */
-function generateRandomString($length = 10): string
+function generateRandomString(int $length = 10): string
 {
   $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   $charactersLength = strlen($characters);
   $randomString = '';
 
   for ($i = 0; $i < $length; $i++) {
-    // Shuffle the characters array
-    $shuffledCharacters = str_shuffle($characters);
     $randomIndex = random_int(0, $charactersLength - 1);
-    $randomString .= $shuffledCharacters[$randomIndex];
+    $randomString .= $characters[$randomIndex];
   }
 
   return $randomString;
 }
 
 /**
+ * Sanitize filename to prevent security issues
+ */
+function sanitizeFileName(string $fileName): string
+{
+  // Remove null bytes (security risk)
+  $fileName = str_replace("\0", '', $fileName);
+  
+  // Remove path traversal attempts
+  $fileName = str_replace(['../', '..\\', './', '.\\'], '', $fileName);
+  
+  // Get just the basename (remove any directory components)
+  $fileName = basename($fileName);
+  
+  // Remove Windows reserved characters: < > : " | ? * \
+  $fileName = preg_replace('/[<>:"|?*\\\\]/', '', $fileName);
+  
+  // Replace spaces and multiple dots with underscores
+  $fileName = preg_replace('/\s+/', '_', $fileName);
+  $fileName = preg_replace('/\.{2,}/', '.', $fileName);
+  
+  // Remove leading/trailing dots, spaces, and underscores
+  $fileName = trim($fileName, '._ ');
+  
+  // Limit filename length (255 is max on most filesystems, leave room for extension)
+  $maxLength = 200;
+  if (strlen($fileName) > $maxLength) {
+    $ext = pathinfo($fileName, PATHINFO_EXTENSION);
+    $name = pathinfo($fileName, PATHINFO_FILENAME);
+    $fileName = substr($name, 0, $maxLength - strlen($ext) - 1) . '.' . $ext;
+  }
+  
+  // If filename is empty or only dots, generate a fallback
+  if (empty($fileName) || preg_match('/^\.+$/', $fileName)) {
+    $fileName = 'upload_' . time();
+  }
+  
+  return $fileName;
+}
+
+/**
  * Return a JSON response
  */
-function respondJson($data): void
+function respondJson(array $data): void
 {
   echo (json_encode($data));
   die();
 }
 
 try {
-  $uploadKey = isset($_POST['uploadKey']) ? $_POST['uploadKey'] : null; // The uploadKey key
+  $uploadKey = isset($_POST['secret']) ? $_POST['secret'] : null; // The upload key
   $file = isset($_FILES['sharex']) ? $_FILES['sharex'] : null; // The uploaded file
 
   // Page to show if someone visits the upload script
@@ -71,10 +108,10 @@ try {
   }
 
   // Check if the upload key is valid
-  if (!isset($uploadKey) && in_array($uploadKey, $uploaduploadKeys)) {
+  if ($uploadKey === null || !in_array($uploadKey, $uploadKeys)) {
     respondJson(array(
       'status' => 'ERROR',
-      'url' => 'Invalid or missing upload uploadKey'
+      'url' => 'Invalid or missing upload key'
     ));
     die();
   }
@@ -97,14 +134,10 @@ try {
     die();
   }
 
-  $originalFileName = preg_replace("/[^A-Za-z0-9_.]/", '', $_FILES["sharex"]["name"]); // Remove unwanted characters (e.g. spaces, special characters, etc.)
-  $fileType = pathinfo($originalFileName, PATHINFO_EXTENSION); // File extension (e.g. png, jpg, etc.)
+  $originalFileName = sanitizeFileName($_FILES["sharex"]["name"]);
+  $fileType = pathinfo($originalFileName, PATHINFO_EXTENSION);
+  $fileName = $useRandomFileNames ? generateRandomString($fileNameLength) . "." . $fileType : $originalFileName;
   $fileSize = $_FILES["sharex"]["size"]; // File size in bytes
-
-  $fileName = $originalFileName; // The final name of the file
-  if ($useRandomFileNames) { // Generate a random file name if enabled
-    $fileName = generateRandomString($fileNameLength) . "." . $fileType;
-  }
 
   // Check if the file already exists
   if (file_exists($uploadDir . $fileName)) {
