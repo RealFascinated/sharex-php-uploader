@@ -11,8 +11,7 @@ RUN rm -rf /var/cache/apk/*
 COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 
 # Copy application files
-COPY ./upload.php /tmp/upload.php
-COPY ./docker/index.html /tmp/index.html
+COPY ./upload.php ./docker/index.html /tmp/
 COPY ./docker/start.sh /start.sh
 
 # Make start script executable
