@@ -5,6 +5,7 @@
  */
 $SCRIPT_VERSION = "1.0.0"; // The version of the script
 $defaultUploadKey = "set_me"; // The default upload key
+$before = microtime(true);
 header('Content-type:application/json;charset=utf-8'); // Set the response content type to JSON
 
 /**
@@ -88,6 +89,15 @@ function sanitizeFileName(string $fileName): string
 }
 
 /**
+ * Get the time taken to process the request
+ */
+function getTimeTaken(): string
+{
+  global $before;
+  return round((microtime(true) - $before), 2) . "ms";
+}
+
+/**
  * Return a JSON response
  */
 function respondJson(array $data): void
@@ -105,7 +115,8 @@ try {
     respondJson(array(
       'status' => 'OK',
       'url' => 'Welcome to the ShareX PHP Uploader! v' . $SCRIPT_VERSION,
-      'support' => "For support, visit - https://github.com/RealFascinated/sharex-php-uploader"
+      'support' => "For support, visit - https://github.com/RealFascinated/sharex-php-uploader",
+      'timeTaken' => getTimeTaken()
     ));
     die();
   }
@@ -114,7 +125,8 @@ try {
   if ($uploadKey === null || !in_array($uploadKey, $uploadKeys)) {
     respondJson(array(
       'status' => 'ERROR',
-      'url' => 'Invalid or missing upload key'
+      'url' => 'Invalid or missing upload key',
+      'timeTaken' => getTimeTaken()
     ));
     die();
   }
@@ -123,7 +135,8 @@ try {
   if ($uploadKey == $defaultUploadKey) {
     respondJson(array(
       'status' => 'ERROR',
-      'url' => 'You need to set your upload key in the configuration section of the upload.php file'
+      'url' => 'You need to set your upload key in the configuration section of the upload.php file',
+      'timeTaken' => getTimeTaken()
     ));
     die();
   }
@@ -132,7 +145,8 @@ try {
   if (!isset($file)) {
     respondJson(array(
       'status' => 'ERROR',
-      'url' => 'No file was uploaded'
+      'url' => 'No file was uploaded',
+      'timeTaken' => getTimeTaken()
     ));
     die();
   }
@@ -146,7 +160,8 @@ try {
     if ($mimeType == "") {
       respondJson(array(
         'status' => 'ERROR',
-        'url' => 'File does not have a valid extension or is missing an extension'
+        'url' => 'File does not have a valid extension or is missing an extension',
+        'timeTaken' => getTimeTaken()
       ));
     }
     // Map MIME types to file extensions
@@ -174,7 +189,8 @@ try {
   if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
     respondJson(array(
       'status' => 'ERROR',
-      'url' => 'Failed to create upload directory'
+      'url' => 'Failed to create upload directory',
+      'timeTaken' => getTimeTaken()
     ));
     die();
   }
@@ -183,7 +199,8 @@ try {
   if (file_exists($uploadDir . $fileName)) {
     respondJson(array(
       'status' => 'ERROR',
-      'url' => 'The file ' . $fileName . ' already exists'
+      'url' => 'The file ' . $fileName . ' already exists',
+      'timeTaken' => getTimeTaken()
     ));
     die();
   }
@@ -193,20 +210,23 @@ try {
   if (!$success) {
     respondJson(array(
       'status' => 'ERROR',
-      'url' => 'Failed to save file. Check the permissions of the upload directory.'
+      'url' => 'Failed to save file. Check the permissions of the upload directory.',
+      'timeTaken' => getTimeTaken()
     ));
     die();
   }
 
   respondJson(array(
     'status' => 'OK',
-    'url' => $fileName
+    'url' => $fileName,
+    'timeTaken' => getTimeTaken()
   ));
   die();
 } catch (Exception $e) { // Handle any errors
   respondJson(array(
     'status' => 'ERROR',
-    'url' => $e->getMessage()
+    'url' => $e->getMessage(),
+    'timeTaken' => getTimeTaken()
   ));
   die();
 }
