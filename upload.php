@@ -136,6 +136,17 @@ try {
 
   $originalFileName = sanitizeFileName($_FILES["sharex"]["name"]);
   $fileType = pathinfo($originalFileName, PATHINFO_EXTENSION);
+  if ($fileType == "") {
+    // Use FileInfo to guess the file type
+    $fileInfo = new finfo(FILEINFO_MIME_TYPE);
+    $fileType = $fileInfo->buffer(file_get_contents($_FILES["sharex"]["tmp_name"]));
+    if ($fileType == "") {
+      respondJson(array(
+        'status' => 'ERROR',
+        'url' => 'File does not have a valid extension or is missing an extension'
+      ));
+    }
+  }
   $fileName = $useRandomFileNames ? generateRandomString($fileNameLength) . "." . $fileType : $originalFileName;
   $fileSize = $_FILES["sharex"]["size"]; // File size in bytes
 

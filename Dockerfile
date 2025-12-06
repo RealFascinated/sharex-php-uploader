@@ -2,7 +2,7 @@ FROM nginx:1.29.3-alpine
 
 # Install PHP-FPM and required dependencies
 RUN apk update && apk upgrade && \
-    apk add --no-cache php83 php83-fpm php83-gd
+    apk add --no-cache php83 php83-fpm php83-gd php83-fileinfo
 
 # Cleanup unnecessary files
 RUN rm -rf /var/cache/apk/*
