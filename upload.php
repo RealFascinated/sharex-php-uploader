@@ -58,6 +58,9 @@ function sanitizeFileName(string $fileName): string
   // Get just the basename (remove any directory components)
   $fileName = basename($fileName);
   
+  // Remove all directory separators (forward and backward slashes)
+  $fileName = str_replace(['/', '\\'], '', $fileName);
+  
   // Remove Windows reserved characters: < > : " | ? * \
   $fileName = preg_replace('/[<>:"|?*\\\\]/', '', $fileName);
   
@@ -139,16 +142,42 @@ try {
   if ($fileType == "") {
     // Use FileInfo to guess the file type
     $fileInfo = new finfo(FILEINFO_MIME_TYPE);
-    $fileType = $fileInfo->buffer(file_get_contents($_FILES["sharex"]["tmp_name"]));
-    if ($fileType == "") {
+    $mimeType = $fileInfo->buffer(file_get_contents($_FILES["sharex"]["tmp_name"]));
+    if ($mimeType == "") {
       respondJson(array(
         'status' => 'ERROR',
         'url' => 'File does not have a valid extension or is missing an extension'
       ));
     }
+    // Map MIME types to file extensions
+    $mimeToExt = array(
+      'image/jpeg' => 'jpg',
+      'image/png' => 'png',
+      'image/gif' => 'gif',
+      'image/webp' => 'webp',
+      'image/svg+xml' => 'svg',
+      'text/plain' => 'txt',
+      'text/html' => 'html',
+      'application/json' => 'json',
+      'application/pdf' => 'pdf',
+      'video/mp4' => 'mp4',
+      'video/webm' => 'webm',
+      'audio/mpeg' => 'mp3',
+      'audio/wav' => 'wav'
+    );
+    $fileType = isset($mimeToExt[$mimeType]) ? $mimeToExt[$mimeType] : explode('/', $mimeType)[1] ?? 'bin';
   }
-  $fileName = $useRandomFileNames ? generateRandomString($fileNameLength) . "." . $fileType : $originalFileName;
+  $fileName = sanitizeFileName($useRandomFileNames ? generateRandomString($fileNameLength) . "." . $fileType : $originalFileName);
   $fileSize = $_FILES["sharex"]["size"]; // File size in bytes
+
+  // Ensure upload directory exists
+  if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
+    respondJson(array(
+      'status' => 'ERROR',
+      'url' => 'Failed to create upload directory'
+    ));
+    die();
+  }
 
   // Check if the file already exists
   if (file_exists($uploadDir . $fileName)) {
