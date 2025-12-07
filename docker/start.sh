@@ -43,6 +43,8 @@ if [ ! -f "/var/www/html/.file_hashes.json" ]; then
   echo "Creating hashes..."
   php /create-hashes.php 2>&1
 fi
+# Ensure 777 permissions on the hash file
+chmod 777 /var/www/html/.file_hashes.json
 
 # Start services
 start_services() {
