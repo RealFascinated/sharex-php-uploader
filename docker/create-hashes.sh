@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e
 
 # Get upload directory from environment or use default
-UPLOAD_DIR="${UPLOAD_DIR:-./}"
+UPLOAD_DIR="${UPLOAD_DIR:-/var/www/html}"
 HASH_FILE="${UPLOAD_DIR}/.file_hashes.json"
 
 # Ensure upload directory exists
@@ -21,7 +21,10 @@ trap "rm -f $TEMP_FILE" EXIT
 
 # Scan directory for files (excluding the hash file itself)
 file_count=0
-while IFS= read -r -d '' file; do
+for file in "$UPLOAD_DIR"/*; do
+  # Skip if not a regular file
+  [ -f "$file" ] || continue
+  
   # Get relative filename from upload directory
   filename=$(basename "$file")
   
@@ -40,8 +43,8 @@ while IFS= read -r -d '' file; do
   echo "  \"$hash\": \"$filename_escaped\"" >> "$TEMP_FILE"
   
   echo "Calculated hash for $filename"
-  ((file_count++))
-done < <(find "$UPLOAD_DIR" -maxdepth 1 -type f -print0 2>/dev/null || true)
+  file_count=$((file_count + 1))
+done
 
 # Build final JSON with proper formatting
 {
