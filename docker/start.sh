@@ -41,7 +41,7 @@ chmod 777 /var/www/html/upload.php
 # Create hashes
 if [ ! -f "/var/www/html/.file_hashes.json" ]; then
   echo "Creating hashes..."
-  php /create-hashes.php
+  php /create-hashes.php 2>&1
 fi
 
 # Start services

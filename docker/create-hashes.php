@@ -1,6 +1,10 @@
 #!/usr/bin/env php
 <?php
 
+// Ensure errors are displayed
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+
 $UPLOAD_DIR = getenv('UPLOAD_DIR') ?: '/var/www/html';
 // Normalize path - if it's relative, use /var/www/html
 if ($UPLOAD_DIR === './' || $UPLOAD_DIR === '.') {
