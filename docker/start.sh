@@ -41,7 +41,7 @@ chmod 777 /var/www/html/upload.php
 # Create hashes
 if [ ! -f "/var/www/html/.file_hashes.json" ]; then
   echo "Creating hashes..."
-  chmod +x ./create-hashes.sh
+  chmod +x ./docker/create-hashes.sh
   ./docker/create-hashes.sh
 fi
 
