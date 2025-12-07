@@ -21,9 +21,6 @@ echo "Configuring PHP-FPM..."
 echo "env[DOCKER] = true" >> /etc/php83/php-fpm.d/www.conf
 echo "clear_env = no" >> /etc/php83/php-fpm.d/www.conf
 sed -i 's/^listen = .*/listen = \/run\/php\/php.sock/' /etc/php83/php-fpm.d/www.conf
-# Ensure PHP-FPM can write to the upload directory
-sed -i 's/^user = .*/user = root/' /etc/php83/php-fpm.d/www.conf 2>/dev/null || true
-sed -i 's/^group = .*/group = root/' /etc/php83/php-fpm.d/www.conf 2>/dev/null || true
 
 # Create PHP socket directory
 mkdir -p /run/php
@@ -41,21 +38,6 @@ sed -i "s/\${MAX_UPLOAD_SIZE}/${MAX_UPLOAD_SIZE}/" /etc/nginx/nginx.conf
 # Set permissions
 chmod 777 /var/www/html/upload.php
 
-# Create hashes
-if [ ! -f "/var/www/html/.file_hashes.json" ]; then
-  echo "Creating hashes..."
-  php /create-hashes.php 2>&1
-fi
-
-# Ensure hash file exists and has correct permissions for PHP-FPM
-if [ ! -f "/var/www/html/.file_hashes.json" ]; then
-  # Create empty hash file if it doesn't exist
-  touch /var/www/html/.file_hashes.json
-  echo "{}" > /var/www/html/.file_hashes.json
-fi
-chmod 777 /var/www/html/.file_hashes.json
-echo "Set permissions on hash file"
-
 # Start services
 start_services() {
   echo "Starting PHP-FPM..."
@@ -69,11 +51,6 @@ start_services() {
   
   echo "Setting socket permissions..."
   chmod 777 /run/php/php.sock
-  
-  # Ensure hash file is writable after PHP-FPM starts (in case it was recreated)
-  if [ -f "/var/www/html/.file_hashes.json" ]; then
-    chmod 777 /var/www/html/.file_hashes.json 2>/dev/null || true
-  fi
   
   echo "Starting Nginx..."
   nginx -g 'daemon off;'
