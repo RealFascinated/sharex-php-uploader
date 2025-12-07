@@ -5,6 +5,7 @@
  */
 $SCRIPT_VERSION = "1.0.0"; // The version of the script
 $defaultUploadKey = "set_me"; // The default upload key
+$fileHashesFileName = ".file_hashes.json"; // The file name of the file hashes
 $before = microtime(true);
 header('Content-type:application/json;charset=utf-8'); // Set the response content type to JSON
 
@@ -27,6 +28,18 @@ if (getenv('DOCKER')) { // If the script is running in a Docker container
   $useRandomFileNames = false; // Use random file names instead of the original file name
   $fileNameLength = 8; // The length of the random file name
 }
+
+// Ensure upload directory exists
+if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
+  respondJson(array(
+    'status' => 'ERROR',
+    'url' => 'Failed to create upload directory',
+    'timeTaken' => getTimeTaken()
+  ));
+  die();
+}
+
+$fileHashes = loadFileHashes(); // The file hashes to deduplicate file uploads
 
 /**
  * Generate a random string
@@ -106,6 +119,62 @@ function respondJson(array $data): void
   die();
 }
 
+/**
+ * Load the file hashes
+ */
+function loadFileHashes(): array
+{
+  global $uploadDir;
+  global $fileHashesFileName;
+  global $fileHashes;
+
+  $filePath = $uploadDir . $fileHashesFileName;
+  if (!file_exists($filePath)) {
+    $fileHashes = array();
+    
+    // Scan the upload dir for existing files and calculate the hash for each file
+    $files = scandir($uploadDir);
+    foreach ($files as $file) {
+      if (is_file($uploadDir . $file)) {
+        $fileHashes[getFileHash($uploadDir . $file)] = $file;
+        echo "Calculated hash for " . $file . " and added to file hashes" . PHP_EOL;
+      }
+    }
+    saveFileHashes();
+    return $fileHashes;
+  }
+
+  $fileHashes = json_decode(file_get_contents($filePath), true);
+  if (!$fileHashes) {
+    $fileHashes = array();
+    saveFileHashes();
+  }
+  return $fileHashes;
+}
+
+/**
+ * Save the file hashes
+ */
+function saveFileHashes(): void
+{
+  global $uploadDir;
+  global $fileHashesFileName;
+  global $fileHashes;
+  
+  $filePath = $uploadDir . $fileHashesFileName;
+
+  file_put_contents($filePath, json_encode($fileHashes, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+  chmod($filePath, 0644);
+}
+
+/**
+ * Get the hash for a file
+ */
+function getFileHash(string $filePath): string
+{
+  return hash_file('sha256', $filePath);
+}
+
 try {
   $uploadKey = isset($_POST['secret']) ? $_POST['secret'] : null; // The upload key
   $file = isset($_FILES['sharex']) ? $_FILES['sharex'] : null; // The uploaded file
@@ -182,18 +251,21 @@ try {
     );
     $fileType = isset($mimeToExt[$mimeType]) ? $mimeToExt[$mimeType] : explode('/', $mimeType)[1] ?? 'bin';
   }
-  $fileName = sanitizeFileName($useRandomFileNames ? generateRandomString($fileNameLength) . "." . $fileType : $originalFileName);
-  $fileSize = $_FILES["sharex"]["size"]; // File size in bytes
-
-  // Ensure upload directory exists
-  if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
+  // Calculate hash from temp file before moving to check for duplicates
+  $fileHash = getFileHash($_FILES["sharex"]["tmp_name"]);
+  
+  // Check if file with same hash already exists (deduplication)
+  if (isset($fileHashes[$fileHash]) && file_exists($uploadDir . $fileHashes[$fileHash])) {
     respondJson(array(
-      'status' => 'ERROR',
-      'url' => 'Failed to create upload directory',
+      'status' => 'OK',
+      'url' => $fileHashes[$fileHash],
       'timeTaken' => getTimeTaken()
     ));
     die();
   }
+
+  $fileName = sanitizeFileName($useRandomFileNames ? generateRandomString($fileNameLength) . "." . $fileType : $originalFileName);
+  $fileSize = $_FILES["sharex"]["size"]; // File size in bytes
 
   // Check if the file already exists
   if (file_exists($uploadDir . $fileName)) {
@@ -214,6 +286,12 @@ try {
       'timeTaken' => getTimeTaken()
     ));
     die();
+  }
+
+  // Only update hash mapping if it doesn't exist or points to a different file
+  if (!isset($fileHashes[$fileHash]) || $fileHashes[$fileHash] !== $fileName) {
+    $fileHashes[$fileHash] = $fileName;
+    saveFileHashes();
   }
 
   respondJson(array(
