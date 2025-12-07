@@ -38,6 +38,13 @@ sed -i "s/\${MAX_UPLOAD_SIZE}/${MAX_UPLOAD_SIZE}/" /etc/nginx/nginx.conf
 # Set permissions
 chmod 777 /var/www/html/upload.php
 
+# Create hashes
+if [ ! -f "/var/www/html/.file_hashes.json" ]; then
+  echo "Creating hashes..."
+  chmod +x ./create-hashes.sh
+  ./docker/create-hashes.sh
+fi
+
 # Start services
 start_services() {
   echo "Starting PHP-FPM..."

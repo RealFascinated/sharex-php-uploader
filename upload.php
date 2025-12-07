@@ -131,15 +131,6 @@ function loadFileHashes(): array
   $filePath = $uploadDir . $fileHashesFileName;
   if (!file_exists($filePath)) {
     $fileHashes = array();
-    
-    // Scan the upload dir for existing files and calculate the hash for each file
-    $files = scandir($uploadDir);
-    foreach ($files as $file) {
-      if (is_file($uploadDir . $file)) {
-        $fileHashes[getFileHash($uploadDir . $file)] = $file;
-        echo "Calculated hash for " . $file . " and added to file hashes" . PHP_EOL;
-      }
-    }
     saveFileHashes();
     return $fileHashes;
   }
