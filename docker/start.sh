@@ -43,8 +43,14 @@ if [ ! -f "/var/www/html/.file_hashes.json" ]; then
   echo "Creating hashes..."
   php /create-hashes.php 2>&1
 fi
-# Ensure 777 permissions on the hash file
+
+# Ensure hash file exists and has correct permissions for PHP-FPM
+if [ ! -f "/var/www/html/.file_hashes.json" ]; then
+  # Create empty hash file if it doesn't exist
+  echo "{}" > /var/www/html/.file_hashes.json
+fi
 chmod 777 /var/www/html/.file_hashes.json
+echo "Set permissions on hash file"
 
 # Start services
 start_services() {

@@ -15,6 +15,10 @@ header('Content-type:application/json;charset=utf-8'); // Set the response conte
 if (getenv('DOCKER')) { // If the script is running in a Docker container
   $uploadKeys = explode(",", getenv('UPLOAD_SECRETS')); // The upload keys
   $uploadDir = getenv('UPLOAD_DIR'); // The upload directory
+  // Normalize path - if it's relative, use /var/www/html
+  if ($uploadDir === './' || $uploadDir === '.') {
+    $uploadDir = '/var/www/html';
+  }
   $useRandomFileNames = getenv('USE_RANDOM_FILE_NAMES'); // Use random file names instead of the original file name
   $fileNameLength = getenv('FILE_NAME_LENGTH'); // The length of the random file name
 } else {
