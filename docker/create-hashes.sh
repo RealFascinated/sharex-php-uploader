@@ -28,14 +28,14 @@ ls -la "$UPLOAD_DIR" | head -5
 TEMP_FILE=$(mktemp)
 trap "rm -f $TEMP_FILE" EXIT
 
-# Count total files first for progress
+# Count total files first for progress (exclude hidden files and hash file)
 echo "Counting files..."
-total_files=$(find "$UPLOAD_DIR" -maxdepth 1 -type f ! -name ".file_hashes.json" 2>/dev/null | wc -l)
+total_files=$(find "$UPLOAD_DIR" -maxdepth 1 -type f ! -name ".*" ! -name ".file_hashes.json" 2>/dev/null | wc -l)
 echo "Found $total_files files to process"
 
 # Scan directory for files using find (handles many files better than glob)
 processed=0
-find "$UPLOAD_DIR" -maxdepth 1 -type f ! -name ".file_hashes.json" 2>/dev/null | while IFS= read -r file; do
+find "$UPLOAD_DIR" -maxdepth 1 -type f ! -name ".*" ! -name ".file_hashes.json" 2>/dev/null | while IFS= read -r file; do
   # Get relative filename from upload directory
   filename=$(basename "$file")
   
