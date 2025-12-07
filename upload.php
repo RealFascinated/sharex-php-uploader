@@ -19,6 +19,10 @@ if (getenv('DOCKER')) { // If the script is running in a Docker container
   if ($uploadDir === './' || $uploadDir === '.') {
     $uploadDir = '/var/www/html';
   }
+  // Ensure trailing slash for proper path concatenation
+  if (substr($uploadDir, -1) !== '/') {
+    $uploadDir .= '/';
+  }
   $useRandomFileNames = getenv('USE_RANDOM_FILE_NAMES'); // Use random file names instead of the original file name
   $fileNameLength = getenv('FILE_NAME_LENGTH'); // The length of the random file name
 } else {
