@@ -12,11 +12,10 @@ COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 
 # Copy application files
 COPY ./upload.php ./docker/index.html /tmp/
-COPY ./docker/start.sh ./docker/create-hashes.php /
+COPY ./docker/start.sh /
 
 # Make start script executable
 RUN chmod +x /start.sh
-RUN chmod +x /create-hashes.php
 
 # Start server
 CMD ["sh", "/start.sh"]
