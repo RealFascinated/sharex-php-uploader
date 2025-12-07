@@ -3,7 +3,12 @@
 set -e
 
 # Get upload directory from environment or use default
+# In Docker, the actual path is /var/www/html regardless of env var
 UPLOAD_DIR="${UPLOAD_DIR:-/var/www/html}"
+# Normalize path - if it's relative, use /var/www/html
+if [ "$UPLOAD_DIR" = "./" ] || [ "$UPLOAD_DIR" = "." ]; then
+  UPLOAD_DIR="/var/www/html"
+fi
 HASH_FILE="${UPLOAD_DIR}/.file_hashes.json"
 
 # Ensure upload directory exists
@@ -19,19 +24,11 @@ echo "Generating file hashes..."
 TEMP_FILE=$(mktemp)
 trap "rm -f $TEMP_FILE" EXIT
 
-# Scan directory for files (excluding the hash file itself)
+# Scan directory for files using find (handles many files better than glob)
 file_count=0
-for file in "$UPLOAD_DIR"/*; do
-  # Skip if not a regular file
-  [ -f "$file" ] || continue
-  
+find "$UPLOAD_DIR" -maxdepth 1 -type f ! -name ".file_hashes.json" | while IFS= read -r file; do
   # Get relative filename from upload directory
   filename=$(basename "$file")
-  
-  # Skip the hash file itself
-  if [ "$filename" = ".file_hashes.json" ]; then
-    continue
-  fi
   
   # Calculate SHA256 hash
   hash=$(sha256sum "$file" | cut -d' ' -f1)
@@ -45,6 +42,9 @@ for file in "$UPLOAD_DIR"/*; do
   echo "Calculated hash for $filename"
   file_count=$((file_count + 1))
 done
+
+# Re-count files since the while loop runs in a subshell
+file_count=$(wc -l < "$TEMP_FILE" 2>/dev/null || echo "0")
 
 # Build final JSON with proper formatting
 {
