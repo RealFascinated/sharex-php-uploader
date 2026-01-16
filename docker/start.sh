@@ -26,12 +26,23 @@ sed -i 's/^listen = .*/listen = \/run\/php\/php.sock/' /etc/php83/php-fpm.d/www.
 # Create PHP socket directory
 mkdir -p /run/php
 
+# Create upload temp directory on disk outside web root (not in /tmp which might be tmpfs/RAM)
+mkdir -p /var/tmp/php-uploads
+chmod 777 /var/tmp/php-uploads
+
 # Configure PHP settings
 echo "Configuring PHP settings..."
 sed -i "s/^upload_max_filesize = .*/upload_max_filesize = ${MAX_UPLOAD_SIZE}/" /etc/php83/php.ini
 sed -i "s/^post_max_size = .*/post_max_size = ${MAX_UPLOAD_SIZE}/" /etc/php83/php.ini
 sed -i "s/^max_execution_time = .*/max_execution_time = ${MAX_EXECUTION_TIME}/" /etc/php83/php.ini
 sed -i "s/^memory_limit = .*/memory_limit = ${MEMORY_LIMIT}/" /etc/php83/php.ini
+
+# Set upload temp directory to disk location outside web root (not /tmp which might be in RAM)
+if ! grep -q "^upload_tmp_dir" /etc/php83/php.ini; then
+  echo "upload_tmp_dir = /var/tmp/php-uploads" >> /etc/php83/php.ini
+else
+  sed -i "s|^upload_tmp_dir = .*|upload_tmp_dir = /var/tmp/php-uploads|" /etc/php83/php.ini
+fi
 
 # Configure Nginx
 echo "Configuring Nginx..."
