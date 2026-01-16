@@ -222,9 +222,9 @@ try {
   $originalFileName = sanitizeFileName($_FILES["sharex"]["name"]);
   $fileType = pathinfo($originalFileName, PATHINFO_EXTENSION);
   if ($fileType == "") {
-    // Use FileInfo to guess the file type
+    // Use FileInfo to guess the file type - use finfo_file() instead of buffer to avoid loading entire file into memory
     $fileInfo = new finfo(FILEINFO_MIME_TYPE);
-    $mimeType = $fileInfo->buffer(file_get_contents($_FILES["sharex"]["tmp_name"]));
+    $mimeType = $fileInfo->file($_FILES["sharex"]["tmp_name"]);
     if ($mimeType == "") {
       respondJson(array(
         'status' => 'ERROR',

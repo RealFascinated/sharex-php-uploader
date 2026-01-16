@@ -5,8 +5,9 @@ set -e
 # Set default values for environment variables
 MAX_UPLOAD_SIZE="${MAX_UPLOAD_SIZE:-8M}"
 MAX_EXECUTION_TIME="${MAX_EXECUTION_TIME:-300}"
+MEMORY_LIMIT="${MEMORY_LIMIT:-512M}"
 
-echo "Configuration: MAX_UPLOAD_SIZE=${MAX_UPLOAD_SIZE}, MAX_EXECUTION_TIME=${MAX_EXECUTION_TIME}"
+echo "Configuration: MAX_UPLOAD_SIZE=${MAX_UPLOAD_SIZE}, MAX_EXECUTION_TIME=${MAX_EXECUTION_TIME}, MEMORY_LIMIT=${MEMORY_LIMIT}"
 
 # Copy files if they don't exist
 for file in upload.php index.html; do
@@ -30,6 +31,7 @@ echo "Configuring PHP settings..."
 sed -i "s/^upload_max_filesize = .*/upload_max_filesize = ${MAX_UPLOAD_SIZE}/" /etc/php83/php.ini
 sed -i "s/^post_max_size = .*/post_max_size = ${MAX_UPLOAD_SIZE}/" /etc/php83/php.ini
 sed -i "s/^max_execution_time = .*/max_execution_time = ${MAX_EXECUTION_TIME}/" /etc/php83/php.ini
+sed -i "s/^memory_limit = .*/memory_limit = ${MEMORY_LIMIT}/" /etc/php83/php.ini
 
 # Configure Nginx
 echo "Configuring Nginx..."

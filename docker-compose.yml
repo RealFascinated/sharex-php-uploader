@@ -12,7 +12,9 @@ services:
     restart: always
     environment:
       - TZ=America/Los_Angeles # Your timezone
-      - MAX_UPLOAD_SIZE=500M # The max upload size of files in megabytes. Eg: 500M
+      - MAX_UPLOAD_SIZE=15G # The max upload size of files. Eg: 15G, 500M
+      - MAX_EXECUTION_TIME=3600 # Max execution time in seconds (0 = unlimited). For large files, set higher
+      - MEMORY_LIMIT=512M # PHP memory limit (can stay low since files are streamed, not loaded into memory)
       - UPLOAD_SECRETS=set_me # You can add multiple secrets. Format: secret1,secret2,secret3
       - UPLOAD_DIR=./ # The directory to store the uploaded files
       - USE_RANDOM_FILE_NAMES=true # If true, the uploaded files will be renamed to a random string
