@@ -26,9 +26,11 @@ sed -i 's/^listen = .*/listen = \/run\/php\/php.sock/' /etc/php83/php-fpm.d/www.
 # Create PHP socket directory
 mkdir -p /run/php
 
-# Create upload temp directory on disk outside web root (not in /tmp which might be tmpfs/RAM)
+# Create upload temp directories on disk outside web root (not in /tmp which might be tmpfs/RAM)
 mkdir -p /var/tmp/php-uploads
+mkdir -p /var/tmp/nginx-uploads
 chmod 777 /var/tmp/php-uploads
+chmod 777 /var/tmp/nginx-uploads
 
 # Configure PHP settings
 echo "Configuring PHP settings..."
