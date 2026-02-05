@@ -1,4 +1,4 @@
-FROM nginx:1.29.4-alpine
+FROM nginx:1.29.5-alpine
 
 # Install PHP-FPM and required dependencies
 RUN apk update && apk upgrade && \
